@@ -17,7 +17,7 @@
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR};${CMAKE_MODULE_PATH}")
 
-@XEUS_CONFIG_CODE@
+@PYBIND_JSON_CONFIG_CODE@
 
 include(CMakeFindDependencyMacro)
 find_dependency(pybind11 @pybind11_REQUIRED_VERSION@)

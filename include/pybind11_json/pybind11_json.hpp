@@ -20,12 +20,6 @@ namespace py = pybind11;
 
 namespace nlohmann
 {
-    template <>
-    struct adl_serializer<py::object>
-    {
-        static py::object from_json(const json& j);
-        static void to_json(json& j, const py::object& obj);
-    };
 
     namespace detail
     {
@@ -119,15 +113,19 @@ namespace nlohmann
         }
     }
 
-    inline py::object adl_serializer<py::object>::from_json(const json& j)
+    template <>
+    struct adl_serializer<py::object>
     {
-        return detail::from_json_impl(j);
-    }
+        inline static py::object from_json(const json& j)
+        {
+            return detail::from_json_impl(j);
+        }
 
-    inline void adl_serializer<py::object>::to_json(json& j, const py::object& obj)
-    {
-        j = detail::to_json_impl(obj);
-    }
+        inline static void to_json(json& j, const py::object& obj)
+        {
+            j = detail::to_json_impl(obj);
+        }
+    };
 
 }
 
