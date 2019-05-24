@@ -41,6 +41,9 @@ install:
     - conda config --set always_yes yes --set changeps1 no
     - conda update -q conda
     - conda install cmake nlohmann_json=3.2.0 pybind11=2.2.4 -c conda-forge
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+        conda install gxx_linux-64 libgcc -c conda-forge;
+      fi
     # Activate root environment
     - source activate root
     - mkdir build
