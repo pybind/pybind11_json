@@ -1,42 +1,32 @@
 build: false
 
+os: Visual Studio 2015
+
 platform:
   - x64
 
-image:
-  - Visual Studio 2017
-  - Visual Studio 2015
-
 environment:
   matrix:
-    - MINICONDA: C:\\pybind_json-conda
+    - MINICONDA: C:\pybind_json-conda
 
 init:
   - "ECHO %MINICONDA%"
-  - if "%APPVEYOR_BUILD_WORKER_IMAGE%" == "Visual Studio 2015" set VCVARPATH="C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat"
-  - if "%APPVEYOR_BUILD_WORKER_IMAGE%" == "Visual Studio 2015" set VCARGUMENT=%PLATFORM%
-  - if "%APPVEYOR_BUILD_WORKER_IMAGE%" == "Visual Studio 2017" if "%PLATFORM%" == "x64" set VCVARPATH="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
-  - if "%APPVEYOR_BUILD_WORKER_IMAGE%" == "Visual Studio 2017" if "%PLATFORM%" == "x86" set VCVARPATH="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars32.bat"
-  - echo "%VCVARPATH% %VCARGUMENT%"
-  - "%VCVARPATH% %VCARGUMENT%"
+  - C:\"Program Files (x86)"\"Microsoft Visual Studio 14.0"\VC\vcvarsall.bat %PLATFORM%
   - ps: if($env:Platform -eq "x64"){Start-FileDownload 'http://repo.continuum.io/miniconda/Miniconda3-latest-Windows-x86_64.exe' C:\Miniconda.exe; echo "Done"}
   - ps: if($env:Platform -eq "x86"){Start-FileDownload 'http://repo.continuum.io/miniconda/Miniconda3-latest-Windows-x86.exe' C:\Miniconda.exe; echo "Done"}
   - cmd: C:\Miniconda.exe /S /D=C:\pybind_json-conda
   - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%MINICONDA%\\Library\\bin;%PATH%"
 
 install:
+  # Install conda
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda info -a
-  # Host dependencies
-  - conda install nlohmann_json pybind11=2.2.4 gtest=1.8.0 -c conda-forge
-  # Build dependencies
-  - conda install cmake -c conda-forge
-  # Build and install pybind_json
+  - conda install cmake nlohmann_json=3.2.0 pybind11=2.2.4 -c conda-forge
+  # Build
   - mkdir build
   - cd build
-  - cmake -G "NMake Makefiles" -D CMAKE_INSTALL_PREFIX=%MINICONDA%\\Library -D BUILD_TESTS=ON ..
-  - nmake
+  - cmake -G "NMake Makefiles" -D CMAKE_INSTALL_PREFIX=%MINICONDA%\\LIBRARY -D DOWNLOAD_GTEST=ON -Dgtest_force_shared_crt=ON ..
   - nmake install
 
 build_script:
