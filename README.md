@@ -1,3 +1,5 @@
+[![Travis](https://travis-ci.org/martinRenou/pybind_json.svg?branch=master)](https://travis-ci.org/martinRenou/pybind_json)
+
 ## pybind_json
 
 `pybind_json` is an `nlohmann::json` to `pybind11` bridge, it allows you to automatically convert `nlohmann::json` to `py::object` and the other way around:
