@@ -15,8 +15,10 @@ namespace py = pybind11;
 namespace nl = nlohmann;
 using namespace pybind11::literals;
 
-nl::json j = py::dict("number"_a=1234, "hello"_a="world");
-py::object o = j;
+py::object obj = py::dict("number"_a=1234, "hello"_a="world");
+
+nl::json j = obj;  // Automatic py::object->nl::json conversion
+py::object o = j;  // Automatic nl::json->py::object conversion
 ```
 
 ## Installation from source
