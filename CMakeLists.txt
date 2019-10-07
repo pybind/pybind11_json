@@ -7,9 +7,9 @@
 ############################################################################
 
 cmake_minimum_required(VERSION 3.4.3)
-project(pybind_json)
+project(pybind11_json)
 
-set(PYBIND_JSON_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(PYBIND11_JSON_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(${PROJECT_NAME}_VERSION_MAJOR 0)
 set(${PROJECT_NAME}_VERSION_MINOR 1)
 set(${PROJECT_NAME}_VERSION_PATCH 0)
@@ -33,11 +33,11 @@ include(GNUInstallDirs)
 
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib; ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
 
-set(PYBIND_JSON_HEADERS
-    include/pybind_json/pybind_json.hpp
+set(PYBIND11_JSON_HEADERS
+    include/pybind11_json/pybind11_json.hpp
 )
 
-add_library(${PROJECT_NAME} SHARED ${PYBIND_JSON_HEADERS})
+add_library(${PROJECT_NAME} SHARED ${PYBIND11_JSON_HEADERS})
 
 target_include_directories(${PROJECT_NAME}
                            PUBLIC
@@ -47,19 +47,19 @@ target_link_libraries(${PROJECT_NAME}
                       PUBLIC nlohmann_json::nlohmann_json)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
-                      PUBLIC_HEADER "${PYBIND_JSON_HEADERS}"
-                      COMPILE_DEFINITIONS "PYBIND_JSON_EXPORTS"
+                      PUBLIC_HEADER "${PYBIND11_JSON_HEADERS}"
+                      COMPILE_DEFINITIONS "PYBIND11_JSON_EXPORTS"
                       PREFIX ""
                       VERSION ${${PROJECT_NAME}_VERSION}
                       SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR}
                       LINKER_LANGUAGE CXX
-                      OUTPUT_NAME "libpybind_json")
+                      OUTPUT_NAME "libpybind11_json")
 
 #########
 # Tests #
 #########
 
-OPTION(BUILD_TESTS "pybind_json test suite" OFF)
+OPTION(BUILD_TESTS "pybind11_json test suite" OFF)
 OPTION(DOWNLOAD_GTEST "build gtest from downloaded sources" OFF)
 
 if(DOWNLOAD_GTEST OR GTEST_SRC_DIR)
@@ -76,9 +76,9 @@ endif()
 
 include(CMakePackageConfigHelpers)
 
-set(PYBIND_JSON_CMAKECONFIG_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}" CACHE STRING "install path for pybind_jsonConfig.cmake")
+set(PYBIND11_JSON_CMAKECONFIG_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}" CACHE STRING "install path for pybind11_jsonConfig.cmake")
 
-# Install pybind_json
+# Install pybind11_json
 install(TARGETS ${PROJECT_NAME}
         EXPORT ${PROJECT_NAME}-targets
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -90,26 +90,26 @@ install(TARGETS ${PROJECT_NAME}
 export(EXPORT ${PROJECT_NAME}-targets
        FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
 
-# Configure 'pybind_jsonConfig.cmake' for a build tree
-set(PYBIND_JSON_CONFIG_CODE "####### Expanded from \@PYBIND_JSON_CONFIG_CODE\@ #######\n")
-set(PYBIND_JSON_CONFIG_CODE "${PYBIND_JSON_CONFIG_CODE}set(CMAKE_MODULE_PATH \"${CMAKE_CURRENT_SOURCE_DIR}/cmake;\${CMAKE_MODULE_PATH}\")\n")
-set(PYBIND_JSON_CONFIG_CODE "${PYBIND_JSON_CONFIG_CODE}##################################################")
+# Configure 'pybind11_jsonConfig.cmake' for a build tree
+set(PYBIND11_JSON_CONFIG_CODE "####### Expanded from \@PYBIND11_JSON_CONFIG_CODE\@ #######\n")
+set(PYBIND11_JSON_CONFIG_CODE "${PYBIND11_JSON_CONFIG_CODE}set(CMAKE_MODULE_PATH \"${CMAKE_CURRENT_SOURCE_DIR}/cmake;\${CMAKE_MODULE_PATH}\")\n")
+set(PYBIND11_JSON_CONFIG_CODE "${PYBIND11_JSON_CONFIG_CODE}##################################################")
 configure_package_config_file(${PROJECT_NAME}Config.cmake.in
                               "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
                               INSTALL_DESTINATION ${PROJECT_BINARY_DIR})
 
-# Configure 'pybind_jsonConfig.cmake' for an install tree
-set(PYBIND_JSON_CONFIG_CODE "")
+# Configure 'pybind11_jsonConfig.cmake' for an install tree
+set(PYBIND11_JSON_CONFIG_CODE "")
 configure_package_config_file(${PROJECT_NAME}Config.cmake.in
                               "${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${PROJECT_NAME}Config.cmake"
-                              INSTALL_DESTINATION ${PYBIND_JSON_CMAKECONFIG_INSTALL_DIR})
+                              INSTALL_DESTINATION ${PYBIND11_JSON_CMAKECONFIG_INSTALL_DIR})
 
 write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
                                  VERSION ${${PROJECT_NAME}_VERSION}
                                  COMPATIBILITY AnyNewerVersion)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${PROJECT_NAME}Config.cmake
               ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
-              DESTINATION ${PYBIND_JSON_CMAKECONFIG_INSTALL_DIR})
+              DESTINATION ${PYBIND11_JSON_CMAKECONFIG_INSTALL_DIR})
 install(EXPORT ${PROJECT_NAME}-targets
         FILE ${PROJECT_NAME}Targets.cmake
-        DESTINATION ${PYBIND_JSON_CMAKECONFIG_INSTALL_DIR})
+        DESTINATION ${PYBIND11_JSON_CMAKECONFIG_INSTALL_DIR})

@@ -9,11 +9,11 @@
 cmake_minimum_required(VERSION 3.4.3)
 
 if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-    project(pybind_json-test)
+    project(pybind11_json-test)
 
     enable_testing()
 
-    find_package(pybind_json REQUIRED CONFIG)
+    find_package(pybind11_json REQUIRED CONFIG)
 endif ()
 
 message(STATUS "Forcing tests build type to Release")
@@ -71,19 +71,19 @@ endif()
 
 include_directories(${GTEST_INCLUDE_DIRS} SYSTEM)
 
-set(PYBIND_JSON_TESTS
-    test_pybind_json.cpp
+set(PYBIND11_JSON_TESTS
+    test_pybind11_json.cpp
 )
 
-add_executable(test_pybind_json ${PYBIND_JSON_TESTS})
+add_executable(test_pybind11_json ${PYBIND11_JSON_TESTS})
 if(DOWNLOAD_GTEST OR GTEST_SRC_DIR)
-    add_dependencies(test_pybind_json gtest_main)
+    add_dependencies(test_pybind11_json gtest_main)
 endif()
 
 include_directories(${PYTHON_INCLUDE_DIRS})
-target_link_libraries(test_pybind_json ${PYTHON_LIBRARIES} ${GTEST_BOTH_LIBRARIES}
+target_link_libraries(test_pybind11_json ${PYTHON_LIBRARIES} ${GTEST_BOTH_LIBRARIES}
                       pybind11::embed nlohmann_json::nlohmann_json)
-target_include_directories(test_pybind_json PRIVATE ${PYBIND_JSON_INCLUDE_DIR})
+target_include_directories(test_pybind11_json PRIVATE ${PYBIND11_JSON_INCLUDE_DIR})
 
-add_custom_target(tests COMMAND test_pybind_json DEPENDS test_pybind_json)
+add_custom_target(tests COMMAND test_pybind11_json DEPENDS test_pybind11_json)
 
