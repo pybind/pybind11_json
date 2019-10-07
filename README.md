@@ -1,5 +1,5 @@
 [![Travis](https://travis-ci.org/pybind/pybind11_json.svg?branch=master)](https://travis-ci.org/pybind/pybind11_json)
-[![Build status](https://ci.appveyor.com/api/projects/status/or79ptqnhm37rgm0/branch/master?svg=true)](https://ci.appveyor.com/project/martinRenou/pybind-json/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/d31t6dytkfm28tfo?svg=true)](https://ci.appveyor.com/project/pybind/pybind11-json/branch/master)
 
 ## pybind11_json
 
