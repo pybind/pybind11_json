@@ -11,13 +11,11 @@
 #
 #   pybind11_json_FOUND - true if pybind11_json found on the system
 #   pybind11_json_INCLUDE_DIRS - the directory containing pybind11_json headers
-#   pybind11_json_LIBRARY - the library for dynamic linking
+#   pybind11_json_LIBRARY - empty
 
 @PACKAGE_INIT@
 
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR};${CMAKE_MODULE_PATH}")
-
-@PYBIND_JSON_CONFIG_CODE@
+@PYBIND11_JSON_CONFIG_CODE@
 
 include(CMakeFindDependencyMacro)
 find_dependency(pybind11 @pybind11_REQUIRED_VERSION@)
@@ -26,6 +24,5 @@ find_dependency(nlohmann_json @nlohmann_json_REQUIRED_VERSION@)
 if(NOT TARGET pybind11_json)
   include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
 
-  get_target_property(@PROJECT_NAME@_INCLUDE_DIR pybind11_json INTERFACE_INCLUDE_DIRECTORIES)
-  get_target_property(@PROJECT_NAME@_LIBRARY pybind11_json LOCATION)
+  get_target_property(@PROJECT_NAME@_INCLUDE_DIRS pybind11_json INTERFACE_INCLUDE_DIRECTORIES)
 endif()
