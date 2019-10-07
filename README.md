@@ -1,11 +1,11 @@
-[![Travis](https://travis-ci.org/martinRenou/pybind_json.svg?branch=master)](https://travis-ci.org/martinRenou/pybind_json)
+[![Travis](https://travis-ci.org/pybind/pybind11_json.svg?branch=master)](https://travis-ci.org/pybind/pybind11_json)
 
-## pybind_json
+## pybind11_json
 
-`pybind_json` is an `nlohmann::json` to `pybind11` bridge, it allows you to automatically convert `nlohmann::json` to `py::object` and the other way around:
+`pybind11_json` is an `nlohmann::json` to `pybind11` bridge, it allows you to automatically convert `nlohmann::json` to `py::object` and the other way around:
 
 ```CPP
-#include "pybind_json/pybind_json.hpp"
+#include "pybind11_json/pybind11_json.hpp"
 
 #include "nlohmann/json.hpp"
 
@@ -23,7 +23,7 @@ py::object o = j;  // Automatic nl::json->py::object conversion
 
 ## Installation from source
 
-We encourage you to use conda, but it is not a requirement for `pybind_json` to work.
+We encourage you to use conda for installing dependencies, but it is not a requirement for `pybind11_json` to work.
 
 You can install it from the sources, you will first need to install dependencies
 
@@ -40,16 +40,16 @@ make install
 
 ## Dependencies
 
-``pybind_json`` depends on
+``pybind11_json`` depends on
 
  - [pybind11](https://github.com/pybind/pybind11)
  - [nlohmann_json](https://github.com/nlohmann/json)
 
 
-| `pybind_json`| `nlohmann_json` | `pybind11`      |
-|--------------|-----------------|-----------------|
-|  master      | >=3.2.0,<4.0    | >=2.2.4,<3.0    |
-|  0.1.0       | >=3.2.0,<4.0    | >=2.2.4,<3.0    |
+| `pybind11_json`| `nlohmann_json` | `pybind11`      |
+|----------------|-----------------|-----------------|
+|  master        | >=3.2.0,<4.0    | >=2.2.4,<3.0    |
+|  0.1.0         | >=3.2.0,<4.0    | >=2.2.4,<3.0    |
 
 
 ## License

@@ -9,7 +9,7 @@ image:
 
 environment:
   matrix:
-    - MINICONDA: C:\\pybind_json-conda
+    - MINICONDA: C:\\pybind11_json-conda
 
 init:
   - "ECHO %MINICONDA%"
@@ -21,7 +21,7 @@ init:
   - "%VCVARPATH% %VCARGUMENT%"
   - ps: if($env:Platform -eq "x64"){Start-FileDownload 'http://repo.continuum.io/miniconda/Miniconda3-latest-Windows-x86_64.exe' C:\Miniconda.exe; echo "Done"}
   - ps: if($env:Platform -eq "x86"){Start-FileDownload 'http://repo.continuum.io/miniconda/Miniconda3-latest-Windows-x86.exe' C:\Miniconda.exe; echo "Done"}
-  - cmd: C:\Miniconda.exe /S /D=C:\pybind_json-conda
+  - cmd: C:\Miniconda.exe /S /D=C:\pybind11_json-conda
   - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%MINICONDA%\\Library\\bin;%PATH%"
 
 install:
@@ -32,7 +32,7 @@ install:
   - conda install nlohmann_json pybind11=2.2.4 gtest=1.8.0 -c conda-forge
   # Build dependencies
   - conda install cmake -c conda-forge
-  # Build and install pybind_json
+  # Build and install pybind11_json
   - mkdir build
   - cd build
   - cmake -G "NMake Makefiles" -D CMAKE_INSTALL_PREFIX=%MINICONDA%\\Library -D BUILD_TESTS=ON ..
@@ -40,4 +40,4 @@ install:
   - nmake install
 
 build_script:
-  - .\test\test_pybind_json
+  - .\test\test_pybind11_json

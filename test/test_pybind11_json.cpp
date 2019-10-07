@@ -11,7 +11,7 @@
 
 #include "gtest/gtest.h"
 
-#include "pybind_json/pybind_json.hpp"
+#include "pybind11_json/pybind11_json.hpp"
 
 #include "pybind11/embed.h"
 

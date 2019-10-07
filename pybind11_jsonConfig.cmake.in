@@ -6,12 +6,12 @@
 # The full license is in the file LICENSE, distributed with this software. #
 ############################################################################
 
-# pybind_json cmake module
+# pybind11_json cmake module
 # This module sets the following variables in your project::
 #
-#   pybind_json_FOUND - true if pybind_json found on the system
-#   pybind_json_INCLUDE_DIRS - the directory containing pybind_json headers
-#   pybind_json_LIBRARY - the library for dynamic linking
+#   pybind11_json_FOUND - true if pybind11_json found on the system
+#   pybind11_json_INCLUDE_DIRS - the directory containing pybind11_json headers
+#   pybind11_json_LIBRARY - the library for dynamic linking
 
 @PACKAGE_INIT@
 
@@ -23,9 +23,9 @@ include(CMakeFindDependencyMacro)
 find_dependency(pybind11 @pybind11_REQUIRED_VERSION@)
 find_dependency(nlohmann_json @nlohmann_json_REQUIRED_VERSION@)
 
-if(NOT TARGET pybind_json)
+if(NOT TARGET pybind11_json)
   include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
 
-  get_target_property(@PROJECT_NAME@_INCLUDE_DIR pybind_json INTERFACE_INCLUDE_DIRECTORIES)
-  get_target_property(@PROJECT_NAME@_LIBRARY pybind_json LOCATION)
+  get_target_property(@PROJECT_NAME@_INCLUDE_DIR pybind11_json INTERFACE_INCLUDE_DIRECTORIES)
+  get_target_property(@PROJECT_NAME@_LIBRARY pybind11_json LOCATION)
 endif()

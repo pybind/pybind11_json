@@ -6,8 +6,8 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#ifndef PYBIND_JSON_HPP
-#define PYBIND_JSON_HPP
+#ifndef PYBIND11_JSON_HPP
+#define PYBIND11_JSON_HPP
 
 #include <string>
 #include <vector>
