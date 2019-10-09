@@ -1,7 +1,7 @@
 [![Travis](https://travis-ci.org/pybind/pybind11_json.svg?branch=master)](https://travis-ci.org/pybind/pybind11_json)
 [![Build status](https://ci.appveyor.com/api/projects/status/d31t6dytkfm28tfo?svg=true)](https://ci.appveyor.com/project/pybind/pybind11-json/branch/master)
 
-## pybind11_json
+# pybind11_json
 
 `pybind11_json` is an `nlohmann::json` to `pybind11` bridge, it allows you to automatically convert `nlohmann::json` to `py::object` and the other way around:
 
@@ -22,11 +22,19 @@ nl::json j = obj;  // Automatic py::object->nl::json conversion
 py::object o = j;  // Automatic nl::json->py::object conversion
 ```
 
-## Installation from source
+# Installation
 
-We encourage you to use conda for installing dependencies, but it is not a requirement for `pybind11_json` to work.
+## Using conda
 
-You can install it from the sources, you will first need to install dependencies
+You can install `pybind11_json` using conda
+
+```bash
+conda install -c conda-forge pybind11 nlohmann_json pybind11_json
+```
+
+## From sources
+
+We encourage you to use conda for installing dependencies, but it is not a requirement for `pybind11_json` to work
 
 ```bash
 conda install cmake nlohmann_json pybind11 -c conda-forge
@@ -39,7 +47,17 @@ cmake -D CMAKE_INSTALL_PREFIX=your_conda_path
 make install
 ```
 
-## Dependencies
+## Run tests
+
+You can compile and run tests locally doing
+
+```bash
+cmake -D CMAKE_INSTALL_PREFIX=$CONDA_PREFIX -D DOWNLOAD_GTEST=ON ..
+make
+./test/test_pybind11_json
+```
+
+# Dependencies
 
 ``pybind11_json`` depends on
 
@@ -56,7 +74,7 @@ make install
 |  0.1.0         | >=3.2.0,<4.0    | >=2.2.4,<3.0    |
 
 
-## License
+# License
 
 We use a shared copyright model that enables all contributors to maintain the
 copyright on their contributions.
