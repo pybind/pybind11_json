@@ -109,7 +109,7 @@ namespace nlohmann
                 }
                 return out;
             }
-            throw std::runtime_error("to_json not implemented for this type of object: " + obj.cast<std::string>());
+            return to_json_impl(py::repr(obj));
         }
     }
 

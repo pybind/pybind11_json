@@ -145,6 +145,19 @@ namespace xpyt
         ASSERT_EQ(j["world"], nullptr);
     }
 
+    TEST(pyobject_tojson, class_)
+    {
+        py::scoped_interpreter guard;
+        py::object obj = py::globals();
+        nl::json j = obj;
+        ASSERT_TRUE(j.is_object());
+#if PY_MAJOR_VERSION==3
+        ASSERT_FALSE(j["__loader__"].get<std::string>().empty());
+#else
+        ASSERT_EQ(j["__loader__"], nullptr);
+#endif
+    }
+
     TEST(pyobject_fromjson, none)
     {
         py::scoped_interpreter guard;
