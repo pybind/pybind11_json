@@ -82,8 +82,18 @@ endif()
 
 include_directories(${PYTHON_INCLUDE_DIRS})
 target_link_libraries(test_pybind11_json ${PYTHON_LIBRARIES} ${GTEST_BOTH_LIBRARIES}
-                      pybind11::embed nlohmann_json::nlohmann_json)
+                      pybind11::embed nlohmann_json::nlohmann_json)  # nlohmann_json can be header only
 target_include_directories(test_pybind11_json PRIVATE ${PYBIND11_JSON_INCLUDE_DIR})
 
 add_custom_target(tests COMMAND test_pybind11_json DEPENDS test_pybind11_json)
+
+# a python module is used to test the correctness of auto conversion
+pybind11_add_module(pyjson pybind11_json_module.cpp  )  # generate pyjson python module
+# copy to test source folder, to run the python test
+set_target_properties( pyjson
+    PROPERTIES
+    ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/test/"
+    LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/test/"
+    RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/test/"
+)
 

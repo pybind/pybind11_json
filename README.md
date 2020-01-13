@@ -22,6 +22,35 @@ nl::json j = obj;  // Automatic py::object->nl::json conversion
 py::object o = j;  // Automatic nl::json->py::object conversion
 ```
 
+## Automatic conversion between nl::json and python dict object
+
+C++ functions in [test/pybind11_json_module.cpp](test/pybind11_json_module.cpp)
+```cpp
+void print_pyobject_as_json(nlohmann::json s) {
+    std::cout << "print_pyobject_as_json(): " << s << std::endl;
+}
+nlohmann::json return_json_as_pyobject() {
+    nlohmann::json j = {{"pi", 3.141}};
+    std::cout << "return_json_as_pyobject() : "  << j<< std::endl;
+    return j;
+}
+
+pybind11 binding code
+```
+    m.def("print_pyobject_as_json", &print_pyobject_as_json, "pass py::object to c++");
+    m.def("return_json_as_pyobject", &return_json_as_pyobject, "get py::object from c++");
+```cpp
+
+```
+on python side, see [test/test_pybind11_json.py](test/test_pybind11_json.py)
+```python
+import pyjson
+pyjson.print_pyobject_as_json({"value": 2})
+dd = pyjson.return_json_as_pyobject()
+print(dd) 
+
+```
+
 # Installation
 
 ## Using conda
@@ -47,6 +76,11 @@ cmake -D CMAKE_INSTALL_PREFIX=your_conda_path
 make install
 ```
 
+## Header only
+
+Download the "pybind11_json.hpp", "json.hpp" single file into your project, and install/download pybind11 or use as git submodule. 
+Check header path for `json.hpp` and `pybind11`, then you are ready to go.
+
 ## Run tests
 
 You can compile and run tests locally doing
@@ -55,6 +89,7 @@ You can compile and run tests locally doing
 cmake -D CMAKE_INSTALL_PREFIX=$CONDA_PREFIX -D DOWNLOAD_GTEST=ON ..
 make
 ./test/test_pybind11_json
+python ./test/test_pybind11_json.py
 ```
 
 # Dependencies
