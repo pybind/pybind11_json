@@ -90,7 +90,7 @@ add_custom_target(tests COMMAND test_pybind11_json DEPENDS test_pybind11_json)
 # a python module is used to test the correctness of auto conversion
 pybind11_add_module(pyjson pybind11_json_module.cpp  )  # generate pyjson python module
 target_include_directories(pyjson PRIVATE ${PYBIND11_JSON_INCLUDE_DIR})
-target_link_libraries(pyjson nlohmann_json::nlohmann_json)  # nlohmann_json can be header only
+#target_link_libraries(pyjson nlohmann_json::nlohmann_json)  # nlohmann_json can be header only
 # copy to test source folder, to run the python test
 set_target_properties( pyjson
     PROPERTIES
