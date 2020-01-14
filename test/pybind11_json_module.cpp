@@ -1,11 +1,12 @@
-#include "../include/pybind11_json/pybind11_json.hpp"
+//#include "../include/pybind11_json/pybind11_json.hpp"
+#include "pybind11_json/pybind11_json.hpp"
 #include <iostream>
 
 void print_pyobject_as_json(nlohmann::json s) {
     std::cout << "print_pyobject_as_json(): " << s << std::endl;
 }
 nlohmann::json return_json_as_pyobject() {
-    nlohmann::json j = {{"pi", 3.141}};
+    nlohmann::json j = {{"value", 1}};
     std::cout << "return_json_as_pyobject() : "  << j<< std::endl;
     return j;
 }
