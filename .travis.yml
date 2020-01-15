@@ -57,3 +57,4 @@ install:
     - make -j2 install
 script:
     - ./test/test_pybind11_json
+    - cd ../test/ && python test_pybind11_json.py 

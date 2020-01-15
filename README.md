@@ -3,9 +3,10 @@
 
 # pybind11_json
 
+## C++ side automatic conversion
 `pybind11_json` is an `nlohmann::json` to `pybind11` bridge, it allows you to automatically convert `nlohmann::json` to `py::object` and the other way around:
 
-```CPP
+```cpp
 #include "pybind11_json/pybind11_json.hpp"
 
 #include "nlohmann/json.hpp"
@@ -20,6 +21,35 @@ py::object obj = py::dict("number"_a=1234, "hello"_a="world");
 
 nl::json j = obj;  // Automatic py::object->nl::json conversion
 py::object o = j;  // Automatic nl::json->py::object conversion
+```
+
+##  conversion between nl::json and python dict object
+
+C++ functions in [test/pybind11_json_module.cpp](test/pybind11_json_module.cpp)
+
+```
+void print_pyobject_as_json(nlohmann::json s) {
+    std::cout << "print_pyobject_as_json(): " << s << std::endl;
+}
+nlohmann::json return_json_as_pyobject() {
+    nlohmann::json j = {{"value", 1}};
+    std::cout << "return_json_as_pyobject() : "  << j<< std::endl;
+    return j;
+}
+```
+
+pybind11 binding code, see more in [test/pybind11_json_module.cpp](test/pybind11_json_module.cpp)
+```cpp
+m.def("print_pyobject_as_json", &print_pyobject_as_json, "pass py::object to c++");
+m.def("return_json_as_pyobject", &return_json_as_pyobject, "get py::object from c++");
+```
+
+on python side, see [test/test_pybind11_json.py](test/test_pybind11_json.py)
+```python
+import pyjson
+pyjson.print_pyobject_as_json({"value": 2})
+dd = pyjson.return_json_as_pyobject()
+print(dd)
 ```
 
 # Installation
@@ -46,6 +76,12 @@ Then you can install the sources
 cmake -D CMAKE_INSTALL_PREFIX=your_conda_path
 make install
 ```
+
+## Header only usage
+Download the "pybind11_json.hpp", "json.hpp" single file into your project, and install/download pybind11 or use as git submodule. 
+
+Check header include path for `json.hpp` and `pybind11`, then you are ready to go.
+
 
 ## Run tests
 
