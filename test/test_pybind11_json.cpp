@@ -25,10 +25,13 @@ namespace xpyt
     TEST(pyobject_tojson, none)
     {
         py::scoped_interpreter guard;
-        py::object obj = py::none();
-        nl::json j = obj;
+        py::object obj1;
+        py::object obj2 = py::none();
+        nl::json j1 = obj1;
+        nl::json j2 = obj2;
 
-        ASSERT_TRUE(j.is_null());
+        ASSERT_TRUE(j1.is_null());
+        ASSERT_TRUE(j2.is_null());
     }
 
     TEST(pyobject_tojson, bool_)
