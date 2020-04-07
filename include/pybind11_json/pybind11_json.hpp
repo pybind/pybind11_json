@@ -113,19 +113,34 @@ namespace nlohmann
         }
     }
 
-    template <>
-    struct adl_serializer<py::object>
-    {
-        inline static py::object from_json(const json& j)
-        {
-            return detail::from_json_impl(j);
-        }
-
-        inline static void to_json(json& j, const py::object& obj)
-        {
-            j = detail::to_json_impl(obj);
-        }
+    #define PYBIND11_JSON_MAKE_SERIALIZER(T)               \
+    template <>                                            \
+    struct adl_serializer<T>                               \
+    {                                                      \
+        inline static T from_json(const json& j)           \
+        {                                                  \
+            return detail::from_json_impl(j);              \
+        }                                                  \
+                                                           \
+        inline static void to_json(json& j, const T& obj)  \
+        {                                                  \
+            j = detail::to_json_impl(obj);                 \
+        }                                                  \
     };
+
+    PYBIND11_JSON_MAKE_SERIALIZER(py::handle);
+    PYBIND11_JSON_MAKE_SERIALIZER(py::object);
+
+    PYBIND11_JSON_MAKE_SERIALIZER(py::bool_);
+    PYBIND11_JSON_MAKE_SERIALIZER(py::int_);
+    PYBIND11_JSON_MAKE_SERIALIZER(py::float_);
+    PYBIND11_JSON_MAKE_SERIALIZER(py::str);
+
+    PYBIND11_JSON_MAKE_SERIALIZER(py::list);
+    PYBIND11_JSON_MAKE_SERIALIZER(py::tuple);
+    PYBIND11_JSON_MAKE_SERIALIZER(py::dict);
+
+    #undef PYBIND11_JSON_MAKE_SERIALIZER
 
 }
 
