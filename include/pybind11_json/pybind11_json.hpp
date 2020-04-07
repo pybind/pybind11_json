@@ -71,7 +71,7 @@ namespace nlohmann
 
         inline json to_json_impl(const py::handle& obj)
         {
-            if (obj.is_none())
+            if (obj.ptr() == nullptr || obj.is_none())
             {
                 return nullptr;
             }
