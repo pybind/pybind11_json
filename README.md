@@ -3,7 +3,7 @@
 
 # pybind11_json
 
-## C++ side automatic conversion
+## Automatic conversion between `nlohmann::json` and `pybind11::object`
 `pybind11_json` is an `nlohmann::json` to `pybind11` bridge, it allows you to automatically convert `nlohmann::json` to `py::object` and the other way around:
 
 ```cpp

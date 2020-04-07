@@ -137,13 +137,13 @@ namespace pybind11
         {
         public:
             /**
-             * This macro establishes the name 'user_type' in
-             * function signatures and declares a local variable 'value' of user type
+             * This macro establishes the name 'nlohmann::json' in
+             * function signatures and declares a local variable 'value' of 'nlohmann::json'
              */
             PYBIND11_TYPE_CASTER(nlohmann::json, _("json"));
 
             /**
-             * Conversion part 1 (Python->C++): convert a PyObject into a inty
+             * Conversion part 1 (Python->C++): convert a PyObject into a nlohmann::json
              * instance or return false upon failure. The second argument
              * indicates whether implicit conversions should be applied.
              */
@@ -151,14 +151,21 @@ namespace pybind11
             {
                 /* Extract PyObject from handle */
                 /* Now try to convert into a C++ type */
-                value = nlohmann::detail::to_json_impl(src);
-                if (value.is_null())
-                    return false;
-                return true;
+                bool successful = false;
+                try {
+                    value = nlohmann::detail::to_json_impl(src);
+                    successful = true;
+                }
+                catch(...)
+                {
+                    // leave value as the declared condition (empty or null)
+                    successful = false;
+                }
+                return successful;
             }
 
             /**
-             * Conversion part 2 (C++ -> Python): convert an inty instance into
+             * Conversion part 2 (C++ -> Python): convert an nlohmann::json instance into
              * a Python object. The second and third arguments are used to
              * indicate the return value policy and parent object (for
              * ``return_value_policy::reference_internal``) and are generally
