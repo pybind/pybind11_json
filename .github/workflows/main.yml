@@ -20,19 +20,38 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - uses: goanpeca/setup-miniconda@v1
+
+    - name: Setup conda
+      uses: s-weigand/setup-conda@v1
       with:
-        auto-update-conda: true
+        update-conda: true
         python-version: ${{ matrix.python-version }}
+        conda-channels: conda-forge
 
     - name: Conda install dependencies
-      run: conda install -c conda-forge cmake nlohmann_json=3.2.0 pybind11=2.2.4
+      run: conda install cmake=3.17 nlohmann_json=3.2.0 pybind11=2.5
 
-    - name: Compile tests
-      run: mkdir build |
-           cd build |
-           cmake -D CMAKE_INSTALL_PREFIX=$CONDA_PREFIX -D DOWNLOAD_GTEST=ON -D PYTHON_EXECUTABLE=$CONDA_PREFIX/bin/python -D CMAKE_INSTALL_LIBDIR=lib -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX .. |
+    - name: Unix, install
+      if: matrix.os != 'windows-latest'
+      run: |
+           mkdir build
+           cd build
+           $CONDA/bin/cmake -D CMAKE_INSTALL_PREFIX=$CONDA -D DOWNLOAD_GTEST=ON -D PYTHON_EXECUTABLE=$CONDA/bin/python -D CMAKE_INSTALL_LIBDIR=lib ..
            make install -j2
 
+    - name: Windows, install
+      if: matrix.os == 'windows-latest'
+      shell: cmd
+      run: |
+           call "c:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+           mkdir build
+           cd build
+           %CONDA%/Library/bin/cmake -G "NMake Makefiles" -D CMAKE_INSTALL_PREFIX=%CONDA% -D DOWNLOAD_GTEST=ON -D PYTHON_EXECUTABLE=%CONDA%/python.exe -Dgtest_force_shared_crt=ON -DCMAKE_CXX_FLAGS=/D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING ..
+           nmake install
+
     - name: Run tests
-      run: ./test/test_pybind11_json
+      shell: bash
+      run: |
+           export PYTHONHOME=$CONDA
+           cd build
+           ./test/test_pybind11_json
