@@ -87,3 +87,15 @@ target_include_directories(test_pybind11_json PRIVATE ${PYBIND11_JSON_INCLUDE_DI
 
 add_custom_target(tests COMMAND test_pybind11_json DEPENDS test_pybind11_json)
 
+###################################################
+# a python module is used to test the correctness of auto conversion
+
+pybind11_add_module(pyjson pybind11_json_module.cpp  )  # generate pyjson python module
+target_include_directories(pyjson PRIVATE ${PYBIND11_JSON_INCLUDE_DIR})
+# copy to test source folder, to run the python test
+set_target_properties( pyjson
+    PROPERTIES
+    ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/test/"
+    LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/test/"
+    RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/test/"
+)
