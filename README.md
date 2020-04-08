@@ -1,6 +1,3 @@
-[![Travis](https://travis-ci.org/pybind/pybind11_json.svg?branch=master)](https://travis-ci.org/pybind/pybind11_json)
-[![Build status](https://ci.appveyor.com/api/projects/status/d31t6dytkfm28tfo?svg=true)](https://ci.appveyor.com/project/pybind/pybind11-json/branch/master)
-
 # pybind11_json
 
 ## Automatic conversion between `nlohmann::json` and `pybind11::object`
@@ -78,7 +75,7 @@ make install
 ```
 
 ## Header only usage
-Download the "pybind11_json.hpp", "json.hpp" single file into your project, and install/download pybind11 or use as git submodule. 
+Download the "pybind11_json.hpp", "json.hpp" single file into your project, and install/download pybind11 or use as git submodule.
 
 Check header include path for `json.hpp` and `pybind11`, then you are ready to go.
 
