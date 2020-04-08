@@ -1,0 +1,38 @@
+name: Tests
+
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
+
+jobs:
+  run:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: [3.6, 3.7, 3.8]
+
+    steps:
+    - uses: actions/checkout@v1
+    - uses: goanpeca/setup-miniconda@v1
+      with:
+        auto-update-conda: true
+        python-version: ${{ matrix.python-version }}
+
+    - name: Conda install dependencies
+      run: conda install -c conda-forge cmake nlohmann_json=3.2.0 pybind11=2.2.4
+
+    - name: Compile tests
+      run: mkdir build |
+           cd build |
+           cmake -D CMAKE_INSTALL_PREFIX=$CONDA_PREFIX -D DOWNLOAD_GTEST=ON -D PYTHON_EXECUTABLE=$CONDA_PREFIX/bin/python -D CMAKE_INSTALL_LIBDIR=lib -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX .. |
+           make install -j2
+
+    - name: Run tests
+      run: ./test/test_pybind11_json
