@@ -17,6 +17,7 @@
 #include "pybind11/pybind11.h"
 
 namespace py = pybind11;
+namespace nl = nlohmann;
 
 namespace nlohmann
 {
@@ -148,51 +149,30 @@ namespace pybind11
 {
     namespace detail
     {
-        template <> struct type_caster<nlohmann::json>
+        template <> struct type_caster<nl::json>
         {
         public:
-            /**
-             * This macro establishes the name 'nlohmann::json' in
-             * function signatures and declares a local variable 'value' of 'nlohmann::json'
-             */
-            PYBIND11_TYPE_CASTER(nlohmann::json, _("json"));
+            PYBIND11_TYPE_CASTER(nl::json, _("json"));
 
-            /**
-             * Conversion part 1 (Python->C++): convert a PyObject into a nlohmann::json
-             * instance or return false upon failure. The second argument
-             * indicates whether implicit conversions should be applied.
-             */
             bool load(handle src, bool)
             {
-                /* Extract PyObject from handle */
-                /* Now try to convert into a C++ type */
-                bool successful = false;
                 try {
-                    value = nlohmann::detail::to_json_impl(src);
-                    successful = true;
+                    value = nl::detail::to_json_impl(src);
+                    return true;
                 }
                 catch(...)
                 {
-                    // leave value as the declared condition (empty or null)
-                    successful = false;
+                    return false;
                 }
-                return successful;
             }
 
-            /**
-             * Conversion part 2 (C++ -> Python): convert an nlohmann::json instance into
-             * a Python object. The second and third arguments are used to
-             * indicate the return value policy and parent object (for
-             * ``return_value_policy::reference_internal``) and are generally
-             * ignored by implicit casters.
-             */
-            static handle cast(nlohmann::json src, return_value_policy /* policy */, handle /* parent */)
+            static handle cast(nl::json src, return_value_policy /* policy */, handle /* parent */)
             {
-                object pyo = nlohmann::detail::from_json_impl(src);
-                return pyo.release();
+                object obj = nl::detail::from_json_impl(src);
+                return obj.release();
             }
         };
-    } // namespace detail
-} // namespace pybind11
+    }
+}
 
 #endif
