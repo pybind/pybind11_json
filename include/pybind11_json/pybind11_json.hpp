@@ -17,182 +17,162 @@
 #include "pybind11/pybind11.h"
 
 namespace py = pybind11;
+namespace nl = nlohmann;
 
-namespace nlohmann
+namespace pyjson
 {
-
-    namespace detail
+    inline py::object from_json(const nl::json& j)
     {
-        inline py::object from_json_impl(const json& j)
+        if (j.is_null())
         {
-            if (j.is_null())
+            return py::none();
+        }
+        else if (j.is_boolean())
+        {
+            return py::bool_(j.get<bool>());
+        }
+        else if (j.is_number())
+        {
+            double number = j.get<double>();
+            if (number == std::floor(number))
             {
-                return py::none();
+                return py::int_(j.get<long>());
             }
-            else if (j.is_boolean())
+            else
             {
-                return py::bool_(j.get<bool>());
-            }
-            else if (j.is_number())
-            {
-                double number = j.get<double>();
-                if (number == std::floor(number))
-                {
-                    return py::int_(j.get<long>());
-                }
-                else
-                {
-                    return py::float_(number);
-                }
-            }
-            else if (j.is_string())
-            {
-                return py::str(j.get<std::string>());
-            }
-            else if (j.is_array())
-            {
-                py::list obj;
-                for (const auto& el : j)
-                {
-                    obj.attr("append")(from_json_impl(el));
-                }
-                return obj;
-            }
-            else // Object
-            {
-                py::dict obj;
-                for (json::const_iterator it = j.cbegin(); it != j.cend(); ++it)
-                {
-                    obj[py::str(it.key())] = from_json_impl(it.value());
-                }
-                return obj;
+                return py::float_(number);
             }
         }
-
-        inline json to_json_impl(const py::handle& obj)
+        else if (j.is_string())
         {
-            if (obj.ptr() == nullptr || obj.is_none())
+            return py::str(j.get<std::string>());
+        }
+        else if (j.is_array())
+        {
+            py::list obj;
+            for (const auto& el : j)
             {
-                return nullptr;
+                obj.append(from_json(el));
             }
-            if (py::isinstance<py::bool_>(obj))
+            return obj;
+        }
+        else // Object
+        {
+            py::dict obj;
+            for (nl::json::const_iterator it = j.cbegin(); it != j.cend(); ++it)
             {
-                return obj.cast<bool>();
+                obj[py::str(it.key())] = from_json(it.value());
             }
-            if (py::isinstance<py::int_>(obj))
-            {
-                return obj.cast<long>();
-            }
-            if (py::isinstance<py::float_>(obj))
-            {
-                return obj.cast<double>();
-            }
-            if (py::isinstance<py::str>(obj))
-            {
-                return obj.cast<std::string>();
-            }
-            if (py::isinstance<py::tuple>(obj) || py::isinstance<py::list>(obj))
-            {
-                auto out = json::array();
-                for (const py::handle& value : obj)
-                {
-                    out.push_back(to_json_impl(value));
-                }
-                return out;
-            }
-            if (py::isinstance<py::dict>(obj))
-            {
-                auto out = json::object();
-                for (const py::handle& key : obj)
-                {
-                    out[py::str(key).cast<std::string>()] = to_json_impl(obj[key]);
-                }
-                return out;
-            }
-            throw std::runtime_error("to_json not implemented for this type of object: " + py::repr(obj).cast<std::string>());
+            return obj;
         }
     }
 
-    #define PYBIND11_JSON_MAKE_SERIALIZER(T)               \
+    inline nl::json to_json(const py::handle& obj)
+    {
+        if (obj.ptr() == nullptr || obj.is_none())
+        {
+            return nullptr;
+        }
+        if (py::isinstance<py::bool_>(obj))
+        {
+            return obj.cast<bool>();
+        }
+        if (py::isinstance<py::int_>(obj))
+        {
+            return obj.cast<long>();
+        }
+        if (py::isinstance<py::float_>(obj))
+        {
+            return obj.cast<double>();
+        }
+        if (py::isinstance<py::str>(obj))
+        {
+            return obj.cast<std::string>();
+        }
+        if (py::isinstance<py::tuple>(obj) || py::isinstance<py::list>(obj))
+        {
+            auto out = nl::json::array();
+            for (const py::handle& value : obj)
+            {
+                out.push_back(to_json(value));
+            }
+            return out;
+        }
+        if (py::isinstance<py::dict>(obj))
+        {
+            auto out = nl::json::object();
+            for (const py::handle& key : obj)
+            {
+                out[py::str(key).cast<std::string>()] = to_json(obj[key]);
+            }
+            return out;
+        }
+        throw std::runtime_error("to_json not implemented for this type of object: " + py::repr(obj).cast<std::string>());
+    }
+}
+
+// nlohmann_json serializers
+namespace nlohmann
+{
+    #define MAKE_NLJSON_SERIALIZER(T)                      \
     template <>                                            \
     struct adl_serializer<T>                               \
     {                                                      \
         inline static T from_json(const json& j)           \
         {                                                  \
-            return detail::from_json_impl(j);              \
+            return pyjson::from_json(j);                   \
         }                                                  \
                                                            \
         inline static void to_json(json& j, const T& obj)  \
         {                                                  \
-            j = detail::to_json_impl(obj);                 \
+            j = pyjson::to_json(obj);                      \
         }                                                  \
     };
 
-    PYBIND11_JSON_MAKE_SERIALIZER(py::handle);
-    PYBIND11_JSON_MAKE_SERIALIZER(py::object);
+    MAKE_NLJSON_SERIALIZER(py::handle);
+    MAKE_NLJSON_SERIALIZER(py::object);
 
-    PYBIND11_JSON_MAKE_SERIALIZER(py::bool_);
-    PYBIND11_JSON_MAKE_SERIALIZER(py::int_);
-    PYBIND11_JSON_MAKE_SERIALIZER(py::float_);
-    PYBIND11_JSON_MAKE_SERIALIZER(py::str);
+    MAKE_NLJSON_SERIALIZER(py::bool_);
+    MAKE_NLJSON_SERIALIZER(py::int_);
+    MAKE_NLJSON_SERIALIZER(py::float_);
+    MAKE_NLJSON_SERIALIZER(py::str);
 
-    PYBIND11_JSON_MAKE_SERIALIZER(py::list);
-    PYBIND11_JSON_MAKE_SERIALIZER(py::tuple);
-    PYBIND11_JSON_MAKE_SERIALIZER(py::dict);
+    MAKE_NLJSON_SERIALIZER(py::list);
+    MAKE_NLJSON_SERIALIZER(py::tuple);
+    MAKE_NLJSON_SERIALIZER(py::dict);
 
-    #undef PYBIND11_JSON_MAKE_SERIALIZER
-
+    #undef MAKE_NLJSON_SERIALIZER
 }
 
+// pybind11 caster
 namespace pybind11
 {
     namespace detail
     {
-        template <> struct type_caster<nlohmann::json>
+        template <> struct type_caster<nl::json>
         {
         public:
-            /**
-             * This macro establishes the name 'nlohmann::json' in
-             * function signatures and declares a local variable 'value' of 'nlohmann::json'
-             */
-            PYBIND11_TYPE_CASTER(nlohmann::json, _("json"));
+            PYBIND11_TYPE_CASTER(nl::json, _("json"));
 
-            /**
-             * Conversion part 1 (Python->C++): convert a PyObject into a nlohmann::json
-             * instance or return false upon failure. The second argument
-             * indicates whether implicit conversions should be applied.
-             */
             bool load(handle src, bool)
             {
-                /* Extract PyObject from handle */
-                /* Now try to convert into a C++ type */
-                bool successful = false;
                 try {
-                    value = nlohmann::detail::to_json_impl(src);
-                    successful = true;
+                    value = pyjson::to_json(src);
+                    return true;
                 }
-                catch(...)
+                catch (...)
                 {
-                    // leave value as the declared condition (empty or null)
-                    successful = false;
+                    return false;
                 }
-                return successful;
             }
 
-            /**
-             * Conversion part 2 (C++ -> Python): convert an nlohmann::json instance into
-             * a Python object. The second and third arguments are used to
-             * indicate the return value policy and parent object (for
-             * ``return_value_policy::reference_internal``) and are generally
-             * ignored by implicit casters.
-             */
-            static handle cast(nlohmann::json src, return_value_policy /* policy */, handle /* parent */)
+            static handle cast(nl::json src, return_value_policy /* policy */, handle /* parent */)
             {
-                object pyo = nlohmann::detail::from_json_impl(src);
-                return pyo.release();
+                object obj = pyjson::from_json(src);
+                return obj.release();
             }
         };
-    } // namespace detail
-} // namespace pybind11
+    }
+}
 
 #endif
