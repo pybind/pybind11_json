@@ -20,7 +20,7 @@ namespace nl = nlohmann;
 
 using namespace pybind11::literals;
 
-TEST(pyobject_tojson, none)
+TEST(nljson_serializers_tojson, none)
 {
     py::scoped_interpreter guard;
     py::object obj1;
@@ -32,7 +32,7 @@ TEST(pyobject_tojson, none)
     ASSERT_TRUE(j2.is_null());
 }
 
-TEST(pyobject_tojson, bool_)
+TEST(nljson_serializers_tojson, bool_)
 {
     py::scoped_interpreter guard;
     py::bool_ obj(false);
@@ -42,7 +42,7 @@ TEST(pyobject_tojson, bool_)
     ASSERT_FALSE(j.get<bool>());
 }
 
-TEST(pyobject_tojson, number)
+TEST(nljson_serializers_tojson, number)
 {
     py::scoped_interpreter guard;
     py::int_ obj(36);
@@ -58,7 +58,7 @@ TEST(pyobject_tojson, number)
     ASSERT_EQ(j2.get<double>(), 36.37);
 }
 
-TEST(pyobject_tojson, string)
+TEST(nljson_serializers_tojson, string)
 {
     py::scoped_interpreter guard;
     py::str obj("Hello");
@@ -68,7 +68,7 @@ TEST(pyobject_tojson, string)
     ASSERT_EQ(j.get<std::string>(), "Hello");
 }
 
-TEST(pyobject_tojson, list)
+TEST(nljson_serializers_tojson, list)
 {
     py::scoped_interpreter guard;
     py::list obj;
@@ -83,7 +83,7 @@ TEST(pyobject_tojson, list)
     ASSERT_EQ(j[2].get<bool>(), false);
 }
 
-TEST(pyobject_tojson, empty_list)
+TEST(nljson_serializers_tojson, empty_list)
 {
     py::scoped_interpreter guard;
     py::list obj;
@@ -93,7 +93,7 @@ TEST(pyobject_tojson, empty_list)
     ASSERT_TRUE(j.empty());
 }
 
-TEST(pyobject_tojson, tuple)
+TEST(nljson_serializers_tojson, tuple)
 {
     py::scoped_interpreter guard;
     py::tuple obj = py::make_tuple(1234, "hello", false);
@@ -105,7 +105,7 @@ TEST(pyobject_tojson, tuple)
     ASSERT_EQ(j[2].get<bool>(), false);
 }
 
-TEST(pyobject_tojson, dict)
+TEST(nljson_serializers_tojson, dict)
 {
     py::scoped_interpreter guard;
     py::dict obj("number"_a=1234, "hello"_a="world");
@@ -116,7 +116,7 @@ TEST(pyobject_tojson, dict)
     ASSERT_EQ(j["hello"].get<std::string>(), "world");
 }
 
-TEST(pyobject_tojson, empty_dict)
+TEST(nljson_serializers_tojson, empty_dict)
 {
     py::scoped_interpreter guard;
     py::dict obj;
@@ -126,7 +126,7 @@ TEST(pyobject_tojson, empty_dict)
     ASSERT_TRUE(j.empty());
 }
 
-TEST(pyobject_tojson, nested)
+TEST(nljson_serializers_tojson, nested)
 {
     py::scoped_interpreter guard;
     py::dict obj(
@@ -146,7 +146,7 @@ TEST(pyobject_tojson, nested)
     ASSERT_EQ(j["world"], nullptr);
 }
 
-TEST(pyobject_tojson, handle)
+TEST(nljson_serializers_tojson, handle)
 {
     py::scoped_interpreter guard;
     py::list obj;
@@ -163,7 +163,7 @@ TEST(pyobject_tojson, handle)
     }
 }
 
-TEST(pyobject_fromjson, none)
+TEST(nljson_serializers_fromjson, none)
 {
     py::scoped_interpreter guard;
     nl::json j = "null"_json;
@@ -172,7 +172,7 @@ TEST(pyobject_fromjson, none)
     ASSERT_TRUE(obj.is_none());
 }
 
-TEST(pyobject_fromjson, bool_)
+TEST(nljson_serializers_fromjson, bool_)
 {
     py::scoped_interpreter guard;
     nl::json j = "false"_json;
@@ -186,7 +186,7 @@ TEST(pyobject_fromjson, bool_)
     ASSERT_FALSE(obj2.cast<bool>());
 }
 
-TEST(pyobject_fromjson, number)
+TEST(nljson_serializers_fromjson, number)
 {
     py::scoped_interpreter guard;
     nl::json j = "36"_json;
@@ -210,7 +210,7 @@ TEST(pyobject_fromjson, number)
     ASSERT_EQ(obj4.cast<double>(), 36.2);
 }
 
-TEST(pyobject_fromjson, string)
+TEST(nljson_serializers_fromjson, string)
 {
     py::scoped_interpreter guard;
     nl::json j = "\"Hello World!\""_json;
@@ -224,7 +224,7 @@ TEST(pyobject_fromjson, string)
     ASSERT_EQ(obj2.cast<std::string>(), "Hello World!");
 }
 
-TEST(pyobject_fromjson, list)
+TEST(nljson_serializers_fromjson, list)
 {
     py::scoped_interpreter guard;
     nl::json j = "[1234, \"Hello World!\", false]"_json;
@@ -242,7 +242,7 @@ TEST(pyobject_fromjson, list)
     ASSERT_EQ(py::list(obj2)[2].cast<bool>(), false);
 }
 
-TEST(pyobject_fromjson, dict)
+TEST(nljson_serializers_fromjson, dict)
 {
     py::scoped_interpreter guard;
     nl::json j = "{\"a\": 1234, \"b\":\"Hello World!\", \"c\":false}"_json;
@@ -260,7 +260,7 @@ TEST(pyobject_fromjson, dict)
     ASSERT_EQ(py::dict(obj2)["c"].cast<bool>(), false);
 }
 
-TEST(pyobject_fromjson, nested)
+TEST(nljson_serializers_fromjson, nested)
 {
     py::scoped_interpreter guard;
     nl::json j = R"({
