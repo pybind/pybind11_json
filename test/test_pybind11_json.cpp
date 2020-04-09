@@ -163,6 +163,74 @@ TEST(nljson_serializers_tojson, handle)
     }
 }
 
+TEST(nljson_serializers_tojson, list_accessor)
+{
+    py::scoped_interpreter guard;
+    py::list obj;
+    obj.append(py::make_tuple(1234, "hello", false));
+    obj.append(py::dict("a"_a=12, "b"_a=13));
+    obj.append("world");
+    obj.append(py::none());
+
+    nl::json j = obj[0];
+    ASSERT_TRUE(j.is_array());
+
+    j = obj[1];
+    ASSERT_TRUE(j.is_object());
+
+    j = py::make_tuple(1234, "hello", false)[0];
+    ASSERT_TRUE(j.is_number());
+    ASSERT_EQ(j.get<int>(), 1234);
+}
+
+TEST(nljson_serializers_tojson, tuple_accessor)
+{
+    py::scoped_interpreter guard;
+    py::tuple obj = py::make_tuple(1234, "hello", false);
+
+    nl::json j = obj[0];
+    ASSERT_TRUE(j.is_number());
+    ASSERT_EQ(j.get<int>(), 1234);
+
+    j = obj[1];
+    ASSERT_TRUE(j.is_string());
+    ASSERT_EQ(j.get<std::string>(), "hello");
+}
+
+TEST(nljson_serializers_tojson, item_accessor)
+{
+    py::scoped_interpreter guard;
+    py::dict obj = py::dict("a"_a=12, "b"_a="hello");
+
+    nl::json j = obj["a"];
+    ASSERT_TRUE(j.is_number());
+    ASSERT_EQ(j.get<int>(), 12);
+
+    j = obj["b"];
+    ASSERT_TRUE(j.is_string());
+    ASSERT_EQ(j.get<std::string>(), "hello");
+}
+
+TEST(nljson_serializers_tojson, str_attr_accessor)
+{
+    py::scoped_interpreter guard;
+    py::module sys = py::module::import("sys");
+
+    nl::json j = sys.attr("base_prefix");
+    ASSERT_TRUE(j.is_string());
+}
+
+TEST(nljson_serializers_tojson, obj_attr_accessor)
+{
+    py::scoped_interpreter guard;
+    py::module sys = py::module::import("sys");
+
+    py::str base_prefix = "base_prefix";
+
+    nl::json j = sys.attr(base_prefix);
+    ASSERT_TRUE(j.is_string());
+}
+
 TEST(nljson_serializers_fromjson, none)
 {
     py::scoped_interpreter guard;

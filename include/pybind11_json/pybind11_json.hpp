@@ -114,34 +114,52 @@ namespace pyjson
 // nlohmann_json serializers
 namespace nlohmann
 {
-    #define MAKE_NLJSON_SERIALIZER(T)                      \
+    #define MAKE_NLJSON_SERIALIZER_DESERIALIZER(T)         \
     template <>                                            \
     struct adl_serializer<T>                               \
     {                                                      \
+        inline static void to_json(json& j, const T& obj)  \
+        {                                                  \
+            j = pyjson::to_json(obj);                      \
+        }                                                  \
+                                                           \
         inline static T from_json(const json& j)           \
         {                                                  \
             return pyjson::from_json(j);                   \
         }                                                  \
-                                                           \
+    };
+
+    #define MAKE_NLJSON_SERIALIZER_ONLY(T)                 \
+    template <>                                            \
+    struct adl_serializer<T>                               \
+    {                                                      \
         inline static void to_json(json& j, const T& obj)  \
         {                                                  \
             j = pyjson::to_json(obj);                      \
         }                                                  \
     };
 
-    MAKE_NLJSON_SERIALIZER(py::handle);
-    MAKE_NLJSON_SERIALIZER(py::object);
+    MAKE_NLJSON_SERIALIZER_DESERIALIZER(py::object);
 
-    MAKE_NLJSON_SERIALIZER(py::bool_);
-    MAKE_NLJSON_SERIALIZER(py::int_);
-    MAKE_NLJSON_SERIALIZER(py::float_);
-    MAKE_NLJSON_SERIALIZER(py::str);
+    MAKE_NLJSON_SERIALIZER_DESERIALIZER(py::bool_);
+    MAKE_NLJSON_SERIALIZER_DESERIALIZER(py::int_);
+    MAKE_NLJSON_SERIALIZER_DESERIALIZER(py::float_);
+    MAKE_NLJSON_SERIALIZER_DESERIALIZER(py::str);
 
-    MAKE_NLJSON_SERIALIZER(py::list);
-    MAKE_NLJSON_SERIALIZER(py::tuple);
-    MAKE_NLJSON_SERIALIZER(py::dict);
+    MAKE_NLJSON_SERIALIZER_DESERIALIZER(py::list);
+    MAKE_NLJSON_SERIALIZER_DESERIALIZER(py::tuple);
+    MAKE_NLJSON_SERIALIZER_DESERIALIZER(py::dict);
+
+    MAKE_NLJSON_SERIALIZER_ONLY(py::handle);
+    MAKE_NLJSON_SERIALIZER_ONLY(py::detail::item_accessor);
+    MAKE_NLJSON_SERIALIZER_ONLY(py::detail::list_accessor);
+    MAKE_NLJSON_SERIALIZER_ONLY(py::detail::tuple_accessor);
+    MAKE_NLJSON_SERIALIZER_ONLY(py::detail::sequence_accessor);
+    MAKE_NLJSON_SERIALIZER_ONLY(py::detail::str_attr_accessor);
+    MAKE_NLJSON_SERIALIZER_ONLY(py::detail::obj_attr_accessor);
 
     #undef MAKE_NLJSON_SERIALIZER
+    #undef MAKE_NLJSON_SERIALIZER_ONLY
 }
 
 // pybind11 caster
