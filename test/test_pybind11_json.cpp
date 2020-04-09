@@ -285,3 +285,39 @@ TEST(nljson_serializers_fromjson, nested)
     ASSERT_FALSE(bar["b"].cast<bool>());
     ASSERT_TRUE(py::dict(obj)["hey"].is_none());
 }
+
+inline const nl::json& test_fromtojson(const nl::json& json)
+{
+    return json;
+}
+
+TEST(pybind11_caster_tojson, dict)
+{
+    py::scoped_interpreter guard;
+    py::module m("test");
+
+    m.def("to_json", &test_fromtojson);
+
+    // Simulate calling this binding from Python with a dictionary as argument
+    py::dict obj("number"_a=1234, "hello"_a="world");
+    nl::json j = m.attr("to_json")(obj);
+
+    ASSERT_TRUE(j.is_object());
+    ASSERT_EQ(j["number"].get<int>(), 1234);
+    ASSERT_EQ(j["hello"].get<std::string>(), "world");
+}
+
+TEST(pybind11_caster_fromjson, dict)
+{
+    py::scoped_interpreter guard;
+    py::module m("test");
+
+    m.def("from_json", &test_fromtojson);
+
+    // Simulate calling this binding from Python, getting back a py::object
+    py::dict obj("number"_a=1234, "hello"_a="world");
+    py::dict j = m.attr("from_json")(obj);
+
+    ASSERT_EQ(j["number"].cast<int>(), 1234);
+    ASSERT_EQ(j["hello"].cast<std::string>(), "world");
+}
