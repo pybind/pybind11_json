@@ -41,7 +41,7 @@ void take_json(const nlohmann::json& json) {
 nlohmann::json return_json() {
     nlohmann::json j = {{"value", 1}};
 
-    std::cout << "This function returns an nlohmann::json instance: "  << j<< std::endl;
+    std::cout << "This function returns an nlohmann::json instance: "  << j << std::endl;
 
     return j;
 }
