@@ -1,7 +1,9 @@
+![Tests](https://github.com/pybind/pybind11_json/workflows/Tests/badge.svg)
+
 # pybind11_json
 `pybind11_json` is an `nlohmann::json` to `pybind11` bridge, it allows you to automatically convert `nlohmann::json` to `py::object` and the other way around. Simply include the header, and the automatic conversion will be enabled.
 
-## Automatic conversion between `nlohmann::json` and `pybind11` Python objects
+## C++ API: Automatic conversion between `nlohmann::json` and `pybind11` Python objects
 
 ```cpp
 #include "pybind11_json/pybind11_json.hpp"
@@ -16,40 +18,55 @@ using namespace pybind11::literals;
 
 py::dict obj = py::dict("number"_a=1234, "hello"_a="world");
 
-nl::json j = obj;  // Automatic py::dict->nl::json conversion
+// Automatic py::dict->nl::json conversion
+nl::json j = obj;
 
-py::object result1 = j;  // Automatic nl::json->py::object conversion
-py::dict result2 = j;  // Automatic nl::json->py::dict conversion
+// Automatic nl::json->py::object conversion
+py::object result1 = j;
+// Automatic nl::json->py::dict conversion
+py::dict result2 = j;
 ```
 
-##  Making bindings
+## Making bindings
 
-C++ functions in [test/pybind11_json_module.cpp](test/pybind11_json_module.cpp)
+You can easily make bindings for C++ classes/functions that make use of `nlohmann::json`.
+
+For example, making a binding for the following two functions is automatic, thanks to `pybind11_json`
 
 ```cpp
-void print_pyobject_as_json(nlohmann::json s) {
-    std::cout << "print_pyobject_as_json(): " << s << std::endl;
+void take_json(const nlohmann::json& json) {
+    std::cout << "This function took an nlohmann::json instance as argument: " << s << std::endl;
 }
 
-nlohmann::json return_json_as_pyobject() {
+nlohmann::json return_json() {
     nlohmann::json j = {{"value", 1}};
-    std::cout << "return_json_as_pyobject() : "  << j<< std::endl;
+
+    std::cout << "This function returns an nlohmann::json instance: "  << j<< std::endl;
+
     return j;
 }
 ```
 
-pybind11 binding code, see more in [test/pybind11_json_module.cpp](test/pybind11_json_module.cpp)
+Bindings:
+
 ```cpp
-m.def("print_pyobject_as_json", &print_pyobject_as_json, "pass py::object to c++");
-m.def("return_json_as_pyobject", &return_json_as_pyobject, "get py::object from c++");
+PYBIND11_MODULE(my_module, m) {
+    m.doc() = "My awesome module";
+
+    m.def("take_json", &take_json, "pass py::object to a C++ function that takes an nlohmann::json");
+    m.def("return_json", &return_json, "return py::object from a C++ function that returns an nlohmann::json");
+}
 ```
 
-on python side, see [test/test_pybind11_json.py](test/test_pybind11_json.py)
+You can then use your functions Python side:
+
 ```python
-import pyjson
-pyjson.print_pyobject_as_json({"value": 2})
-dd = pyjson.return_json_as_pyobject()
-print(dd)
+import my_module
+
+my_module.take_json({"value": 2})
+j = my_module.return_json()
+
+print(j)
 ```
 
 # Installation
