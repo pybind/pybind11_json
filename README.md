@@ -1,7 +1,7 @@
 # pybind11_json
+`pybind11_json` is an `nlohmann::json` to `pybind11` bridge, it allows you to automatically convert `nlohmann::json` to `py::object` and the other way around. Simply include the header, and the automatic conversion will be enabled.
 
-## Automatic conversion between `nlohmann::json` and `pybind11::object`
-`pybind11_json` is an `nlohmann::json` to `pybind11` bridge, it allows you to automatically convert `nlohmann::json` to `py::object` and the other way around:
+## Automatic conversion between `nlohmann::json` and `pybind11` Python objects
 
 ```cpp
 #include "pybind11_json/pybind11_json.hpp"
@@ -14,20 +14,23 @@ namespace py = pybind11;
 namespace nl = nlohmann;
 using namespace pybind11::literals;
 
-py::object obj = py::dict("number"_a=1234, "hello"_a="world");
+py::dict obj = py::dict("number"_a=1234, "hello"_a="world");
 
-nl::json j = obj;  // Automatic py::object->nl::json conversion
-py::object o = j;  // Automatic nl::json->py::object conversion
+nl::json j = obj;  // Automatic py::dict->nl::json conversion
+
+py::object result1 = j;  // Automatic nl::json->py::object conversion
+py::dict result2 = j;  // Automatic nl::json->py::dict conversion
 ```
 
-##  conversion between nl::json and python dict object
+##  Making bindings
 
 C++ functions in [test/pybind11_json_module.cpp](test/pybind11_json_module.cpp)
 
-```
+```cpp
 void print_pyobject_as_json(nlohmann::json s) {
     std::cout << "print_pyobject_as_json(): " << s << std::endl;
 }
+
 nlohmann::json return_json_as_pyobject() {
     nlohmann::json j = {{"value", 1}};
     std::cout << "return_json_as_pyobject() : "  << j<< std::endl;
@@ -75,9 +78,7 @@ make install
 ```
 
 ## Header only usage
-Download the "pybind11_json.hpp", "json.hpp" single file into your project, and install/download pybind11 or use as git submodule.
-
-Check header include path for `json.hpp` and `pybind11`, then you are ready to go.
+Download the "pybind11_json.hpp" single file into your project, and install/download `pybind11` and `nlohmann_json` or use as git submodule.
 
 
 ## Run tests
