@@ -25,11 +25,10 @@ jobs:
       uses: s-weigand/setup-conda@v1
       with:
         update-conda: true
-        python-version: ${{ matrix.python-version }}
         conda-channels: conda-forge
 
     - name: Conda install dependencies
-      run: conda install cmake=3.17 nlohmann_json=3.2.0 pybind11=2.5
+      run: conda install python=${{ matrix.python-version }}*=*_cpython cmake=3.17 nlohmann_json=3.2.0 pybind11=2.5
 
     - name: Unix, install
       if: matrix.os != 'windows-latest'
