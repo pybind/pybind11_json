@@ -78,7 +78,7 @@ endif()
 
 include(CMakePackageConfigHelpers)
 
-set(PYBIND11_JSON_CMAKECONFIG_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}" CACHE STRING "install path for pybind11_jsonConfig.cmake")
+set(PYBIND11_JSON_CMAKECONFIG_INSTALL_DIR "${CMAKE_INSTALL_DATAROOTDIR}/cmake/${PROJECT_NAME}" CACHE STRING "install path for pybind11_jsonConfig.cmake")
 
 # Install pybind11_json
 if(CMAKE_VERSION VERSION_LESS 3.15)  # CMake < 3.15
@@ -115,7 +115,8 @@ configure_package_config_file(${PROJECT_NAME}Config.cmake.in
 
 write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
                                  VERSION ${${PROJECT_NAME}_VERSION}
-                                 COMPATIBILITY AnyNewerVersion)
+                                 COMPATIBILITY AnyNewerVersion
+                                 ARCH_INDEPENDENT)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${PROJECT_NAME}Config.cmake
               ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
         DESTINATION ${PYBIND11_JSON_CMAKECONFIG_INSTALL_DIR})
