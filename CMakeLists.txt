@@ -6,7 +6,7 @@
 # The full license is in the file LICENSE, distributed with this software. #
 ############################################################################
 
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.4.3)
 project(pybind11_json)
 
 set(PYBIND11_JSON_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -113,10 +113,20 @@ configure_package_config_file(${PROJECT_NAME}Config.cmake.in
                               "${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${PROJECT_NAME}Config.cmake"
                               INSTALL_DESTINATION ${PYBIND11_JSON_CMAKECONFIG_INSTALL_DIR})
 
-write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
-                                 VERSION ${${PROJECT_NAME}_VERSION}
-                                 COMPATIBILITY AnyNewerVersion
-                                 ARCH_INDEPENDENT)
+# ARCH_INDEPENDENT feature was introduced in cmake 3.14
+if (${CMAKE_VERSION} VERSION_LESS "3.14.0")
+  write_basic_package_version_file(
+      ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+      VERSION ${${PROJECT_NAME}_VERSION}
+      COMPATIBILITY AnyNewerVersion)
+else ()
+  write_basic_package_version_file(
+      ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+      VERSION ${${PROJECT_NAME}_VERSION}
+      COMPATIBILITY AnyNewerVersion
+      ARCH_INDEPENDENT)
+endif ()
+
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${PROJECT_NAME}Config.cmake
               ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
         DESTINATION ${PYBIND11_JSON_CMAKECONFIG_INSTALL_DIR})
