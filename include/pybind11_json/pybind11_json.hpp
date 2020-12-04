@@ -11,6 +11,7 @@
 
 #include <string>
 #include <vector>
+#include <cmath>
 
 #include "nlohmann/json.hpp"
 
@@ -34,7 +35,7 @@ namespace pyjson
         else if (j.is_number())
         {
             double number = j.get<double>();
-            if (number == std::floor(number))
+            if (isfinite(number) && number == std::floor(number))
             {
                 return py::int_(j.get<long>());
             }
