@@ -8,6 +8,7 @@
 
 #include <string>
 #include <vector>
+#include <cmath>
 
 #include "gtest/gtest.h"
 
@@ -48,14 +49,26 @@ TEST(nljson_serializers_tojson, number)
     py::int_ obj(36);
     nl::json j = obj;
 
-    ASSERT_TRUE(j.is_number());
+    ASSERT_TRUE(j.is_number_integer());
     ASSERT_EQ(j.get<int>(), 36);
 
     py::float_ obj2(36.37);
     nl::json j2 = obj2;
 
-    ASSERT_TRUE(j2.is_number());
+    ASSERT_TRUE(j2.is_number_float());
     ASSERT_EQ(j2.get<double>(), 36.37);
+
+    py::float_ obj3(INFINITY);
+    nl::json j3 = obj3;
+
+    ASSERT_TRUE(j3.is_number_float());
+    ASSERT_EQ(j3.get<double>(), INFINITY);
+
+    py::float_ obj4(NAN);
+    nl::json j4 = obj4;
+
+    ASSERT_TRUE(j4.is_number_float());
+    ASSERT_TRUE(isnan(j4.get<double>()));
 }
 
 TEST(nljson_serializers_tojson, string)
@@ -179,7 +192,7 @@ TEST(nljson_serializers_tojson, list_accessor)
     ASSERT_TRUE(j.is_object());
 
     j = py::make_tuple(1234, "hello", false)[0];
-    ASSERT_TRUE(j.is_number());
+    ASSERT_TRUE(j.is_number_integer());
     ASSERT_EQ(j.get<int>(), 1234);
 }
 
@@ -189,7 +202,7 @@ TEST(nljson_serializers_tojson, tuple_accessor)
     py::tuple obj = py::make_tuple(1234, "hello", false);
 
     nl::json j = obj[0];
-    ASSERT_TRUE(j.is_number());
+    ASSERT_TRUE(j.is_number_integer());
     ASSERT_EQ(j.get<int>(), 1234);
 
     j = obj[1];
@@ -276,6 +289,26 @@ TEST(nljson_serializers_fromjson, number)
     py::float_ obj4 = j2;
 
     ASSERT_EQ(obj4.cast<double>(), 36.2);
+
+    nl::json j3(INFINITY);
+    py::object obj5 = j3;
+
+    ASSERT_TRUE(py::isinstance<py::float_>(obj5));
+    ASSERT_EQ(obj5.cast<double>(), INFINITY);
+
+    py::float_ obj6 = j3;
+
+    ASSERT_EQ(obj6.cast<double>(), INFINITY);
+
+    nl::json j4(NAN);
+    py::object obj7 = j4;
+
+    ASSERT_TRUE(py::isinstance<py::float_>(obj7));
+    ASSERT_TRUE(isnan(obj7.cast<double>()));
+
+    py::float_ obj8 = j4;
+
+    ASSERT_TRUE(isnan(obj8.cast<double>()));
 }
 
 TEST(nljson_serializers_fromjson, string)
