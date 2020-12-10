@@ -32,17 +32,13 @@ namespace pyjson
         {
             return py::bool_(j.get<bool>());
         }
-        else if (j.is_number())
+        else if (j.is_number_integer())
         {
-            double number = j.get<double>();
-            if (isfinite(number) && number == std::floor(number))
-            {
-                return py::int_(j.get<long>());
-            }
-            else
-            {
-                return py::float_(number);
-            }
+            return py::int_(j.get<long>());
+        }
+        else if (j.is_number_float())
+        {
+            return py::float_(j.get<double>());
         }
         else if (j.is_string())
         {

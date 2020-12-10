@@ -43,7 +43,7 @@ TEST(nljson_serializers_tojson, bool_)
     ASSERT_FALSE(j.get<bool>());
 }
 
-TEST(nljson_serializers_tojson, number)
+TEST(nljson_serializers_tojson, integer)
 {
     py::scoped_interpreter guard;
     py::int_ obj(36);
@@ -51,7 +51,10 @@ TEST(nljson_serializers_tojson, number)
 
     ASSERT_TRUE(j.is_number_integer());
     ASSERT_EQ(j.get<int>(), 36);
+}
 
+TEST(nljson_serializers_tojson, float_)
+{
     py::float_ obj2(36.37);
     nl::json j2 = obj2;
 
@@ -267,7 +270,7 @@ TEST(nljson_serializers_fromjson, bool_)
     ASSERT_FALSE(obj2.cast<bool>());
 }
 
-TEST(nljson_serializers_fromjson, number)
+TEST(nljson_serializers_fromjson, integer)
 {
     py::scoped_interpreter guard;
     nl::json j = "36"_json;
@@ -279,7 +282,10 @@ TEST(nljson_serializers_fromjson, number)
     py::int_ obj2 = j;
 
     ASSERT_EQ(obj2.cast<int>(), 36);
+}
 
+TEST(nljson_serializers_fromjson, float_)
+{
     nl::json j2 = "36.2"_json;
     py::object obj3 = j2;
 
