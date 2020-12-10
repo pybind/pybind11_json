@@ -55,23 +55,23 @@ TEST(nljson_serializers_tojson, integer)
 
 TEST(nljson_serializers_tojson, float_)
 {
-    py::float_ obj2(36.37);
-    nl::json j2 = obj2;
+    py::float_ obj(36.37);
+    nl::json j = obj;
 
-    ASSERT_TRUE(j2.is_number_float());
-    ASSERT_EQ(j2.get<double>(), 36.37);
+    ASSERT_TRUE(j.is_number_float());
+    ASSERT_EQ(j.get<double>(), 36.37);
 
-    py::float_ obj3(INFINITY);
-    nl::json j3 = obj3;
+    py::float_ obj_inf(INFINITY);
+    nl::json j_inf = obj_inf;
 
-    ASSERT_TRUE(j3.is_number_float());
-    ASSERT_EQ(j3.get<double>(), INFINITY);
+    ASSERT_TRUE(j_inf.is_number_float());
+    ASSERT_EQ(j_inf.get<double>(), INFINITY);
 
-    py::float_ obj4(NAN);
-    nl::json j4 = obj4;
+    py::float_ obj_nan(NAN);
+    nl::json j_nan = obj_nan;
 
-    ASSERT_TRUE(j4.is_number_float());
-    ASSERT_TRUE(isnan(j4.get<double>()));
+    ASSERT_TRUE(j_nan.is_number_float());
+    ASSERT_TRUE(isnan(j_nan.get<double>()));
 }
 
 TEST(nljson_serializers_tojson, string)
@@ -286,35 +286,35 @@ TEST(nljson_serializers_fromjson, integer)
 
 TEST(nljson_serializers_fromjson, float_)
 {
-    nl::json j2 = "36.2"_json;
-    py::object obj3 = j2;
+    nl::json j = "36.2"_json;
+    py::object obj = j;
 
-    ASSERT_TRUE(py::isinstance<py::float_>(obj3));
-    ASSERT_EQ(obj3.cast<double>(), 36.2);
+    ASSERT_TRUE(py::isinstance<py::float_>(obj));
+    ASSERT_EQ(obj.cast<double>(), 36.2);
 
-    py::float_ obj4 = j2;
+    py::float_ f_obj = j;
 
-    ASSERT_EQ(obj4.cast<double>(), 36.2);
+    ASSERT_EQ(f_obj.cast<double>(), 36.2);
 
-    nl::json j3(INFINITY);
-    py::object obj5 = j3;
+    nl::json j_inf(INFINITY);
+    py::object obj_inf = j_inf;
 
-    ASSERT_TRUE(py::isinstance<py::float_>(obj5));
-    ASSERT_EQ(obj5.cast<double>(), INFINITY);
+    ASSERT_TRUE(py::isinstance<py::float_>(obj_inf));
+    ASSERT_EQ(obj_inf.cast<double>(), INFINITY);
 
-    py::float_ obj6 = j3;
+    py::float_ f_obj_inf = j_inf;
 
-    ASSERT_EQ(obj6.cast<double>(), INFINITY);
+    ASSERT_EQ(f_obj_inf.cast<double>(), INFINITY);
 
-    nl::json j4(NAN);
-    py::object obj7 = j4;
+    nl::json j_nan(NAN);
+    py::object obj_nan = j_nan;
 
-    ASSERT_TRUE(py::isinstance<py::float_>(obj7));
-    ASSERT_TRUE(isnan(obj7.cast<double>()));
+    ASSERT_TRUE(py::isinstance<py::float_>(obj_nan));
+    ASSERT_TRUE(isnan(obj_nan.cast<double>()));
 
-    py::float_ obj8 = j4;
+    py::float_ f_obj_nan = j_nan;
 
-    ASSERT_TRUE(isnan(obj8.cast<double>()));
+    ASSERT_TRUE(isnan(f_obj_nan.cast<double>()));
 }
 
 TEST(nljson_serializers_fromjson, string)
