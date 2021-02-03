@@ -81,6 +81,11 @@ namespace pyjson
         {
             return obj.cast<double>();
         }
+        if (py::isinstance<py::bytes>(obj))
+        {
+            py::module base64 = py::module::import("base64");
+            return base64.attr("b64encode")(obj).attr("decode")("utf-8").cast<std::string>();
+        }
         if (py::isinstance<py::str>(obj))
         {
             return obj.cast<std::string>();
