@@ -22,7 +22,7 @@ set(${PROJECT_NAME}_VERSION ${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_V
 set(pybind11_REQUIRED_VERSION 2.2.4)
 set(nlohmann_json_REQUIRED_VERSION 3.2.0)
 
-if (NOT TARGET pybind11)
+if (NOT TARGET pybind11::headers)
 find_package(pybind11 ${pybind11_REQUIRED_VERSION} REQUIRED)
 endif()
 if (NOT TARGET nlohmann_json)
