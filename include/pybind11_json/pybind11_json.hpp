@@ -93,7 +93,7 @@ namespace pyjson
         if (py::isinstance<py::tuple>(obj) || py::isinstance<py::list>(obj))
         {
             auto out = nl::json::array();
-            for (const py::handle& value : obj)
+            for (const py::handle value : obj)
             {
                 out.push_back(to_json(value));
             }
@@ -102,7 +102,7 @@ namespace pyjson
         if (py::isinstance<py::dict>(obj))
         {
             auto out = nl::json::object();
-            for (const py::handle& key : obj)
+            for (const py::handle key : obj)
             {
                 out[py::str(key).cast<std::string>()] = to_json(obj[key]);
             }
