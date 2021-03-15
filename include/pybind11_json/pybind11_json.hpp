@@ -50,7 +50,7 @@ namespace pyjson
             {
                 obj.append(from_json(el));
             }
-            return obj;
+            return std::move(obj);
         }
         else // Object
         {
@@ -59,7 +59,7 @@ namespace pyjson
             {
                 obj[py::str(it.key())] = from_json(it.value());
             }
-            return obj;
+            return std::move(obj);
         }
     }
 
