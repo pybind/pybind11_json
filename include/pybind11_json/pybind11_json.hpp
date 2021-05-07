@@ -128,7 +128,7 @@ namespace nlohmann
         {                                                  \
             return pyjson::from_json(j);                   \
         }                                                  \
-    };
+    }
 
     #define MAKE_NLJSON_SERIALIZER_ONLY(T)                 \
     template <>                                            \
@@ -138,7 +138,7 @@ namespace nlohmann
         {                                                  \
             j = pyjson::to_json(obj);                      \
         }                                                  \
-    };
+    }
 
     MAKE_NLJSON_SERIALIZER_DESERIALIZER(py::object);
 
