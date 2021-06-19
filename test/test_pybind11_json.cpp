@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 #include <cmath>
+#include <limits>
 
 #include "gtest/gtest.h"
 
@@ -51,6 +52,43 @@ TEST(nljson_serializers_tojson, integer)
 
     ASSERT_TRUE(j.is_number_integer());
     ASSERT_EQ(j.get<int>(), 36);
+
+    py::int_ obj_integer_min(std::numeric_limits<nl::json::number_integer_t>::min());
+    nl::json j_integer_min = obj_integer_min;
+
+    ASSERT_TRUE(j_integer_min.is_number_integer());
+    ASSERT_EQ(j_integer_min.get<nl::json::number_integer_t>(), std::numeric_limits<nl::json::number_integer_t>::min());
+
+    py::int_ obj_unsigned_max(std::numeric_limits<nl::json::number_unsigned_t>::max());
+    nl::json j_unsigned_max = obj_unsigned_max;
+
+    ASSERT_TRUE(j_unsigned_max.is_number_unsigned());
+    ASSERT_EQ(j_unsigned_max.get<nl::json::number_unsigned_t>(), std::numeric_limits<nl::json::number_unsigned_t>::max());
+
+    py::int_ obj_integer_border=py::int_(std::numeric_limits<nl::json::number_integer_t>::max()).attr("__add__")(1);
+    nl::json j_integer_border = obj_integer_border;
+
+    ASSERT_TRUE(j_integer_border.is_number_unsigned());
+    ASSERT_EQ(j_integer_min.get<nl::json::number_unsigned_t>(), (nl::json::number_unsigned_t)(std::numeric_limits<nl::json::number_integer_t>::max())+1);
+
+    py::int_ obj_small_outside=obj_integer_min.attr("__sub__")(1);
+    bool failure;
+    try{
+        nl::json j_small_outside = obj_small_outside;
+        failure=false;
+    }catch(...){
+        failure=true;
+    }
+    ASSERT_TRUE(failure);
+
+    py::int_ obj_large_outside=obj_unsigned_max.attr("__add__")(1);
+    try{
+        nl::json j_large_outside = obj_large_outside;
+        failure=false;
+    }catch(...){
+        failure=true;
+    }
+    ASSERT_TRUE(failure);
 }
 
 TEST(nljson_serializers_tojson, float_)
