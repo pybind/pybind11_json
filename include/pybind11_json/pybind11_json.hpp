@@ -79,18 +79,28 @@ namespace pyjson
         }
         if (py::isinstance<py::int_>(obj))
         {
-            try{
-                nl::json::number_integer_t s=obj.cast<nl::json::number_integer_t>();
-                if(py::int_(s).equal(obj)){
+            try
+            {
+                nl::json::number_integer_t s = obj.cast<nl::json::number_integer_t>();
+                if (py::int_(s).equal(obj))
+                {
                     return s;
                 }
-            }catch(...){}
-            try{
-                nl::json::number_unsigned_t u=obj.cast<nl::json::number_unsigned_t>();
-                if(py::int_(u).equal(obj)){
+            }
+            catch (...)
+            {
+            }
+            try
+            {
+                nl::json::number_unsigned_t u = obj.cast<nl::json::number_unsigned_t>();
+                if (py::int_(u).equal(obj))
+                {
                     return u;
                 }
-            }catch(...){}
+            }
+            catch (...)
+            {
+            }
             throw std::runtime_error("to_json received an integer out of range for both nl::json::number_integer_t and nl::json::number_unsigned_t type: " + py::repr(obj).cast<std::string>());
         }
         if (py::isinstance<py::float_>(obj))
