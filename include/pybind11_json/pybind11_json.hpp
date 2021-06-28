@@ -33,7 +33,11 @@ namespace pyjson
         }
         else if (j.is_number_integer())
         {
-            return py::int_(j.get<long>());
+            return py::int_(j.get<nl::json::number_integer_t>());
+        }
+        else if (j.is_number_unsigned())
+        {
+            return py::int_(j.get<nl::json::number_unsigned_t>());
         }
         else if (j.is_number_float())
         {
@@ -75,7 +79,29 @@ namespace pyjson
         }
         if (py::isinstance<py::int_>(obj))
         {
-            return obj.cast<long>();
+            try
+            {
+                nl::json::number_integer_t s = obj.cast<nl::json::number_integer_t>();
+                if (py::int_(s).equal(obj))
+                {
+                    return s;
+                }
+            }
+            catch (...)
+            {
+            }
+            try
+            {
+                nl::json::number_unsigned_t u = obj.cast<nl::json::number_unsigned_t>();
+                if (py::int_(u).equal(obj))
+                {
+                    return u;
+                }
+            }
+            catch (...)
+            {
+            }
+            throw std::runtime_error("to_json received an integer out of range for both nl::json::number_integer_t and nl::json::number_unsigned_t type: " + py::repr(obj).cast<std::string>());
         }
         if (py::isinstance<py::float_>(obj))
         {
