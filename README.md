@@ -46,7 +46,7 @@ nlohmann::json return_json() {
     return j;
 }
 ```
-
+rebuild
 Bindings:
 
 ```cpp
