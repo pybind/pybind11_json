@@ -49,10 +49,10 @@ namespace pyjson
         }
         else if (j.is_array())
         {
-            py::list obj;
-            for (const auto& el : j)
+            py::list obj(j.size());
+            for (std::size_t i = 0; i < j.size(); i++)
             {
-                obj.append(from_json(el));
+                obj[i] = from_json(j[i]);
             }
             return std::move(obj);
         }
@@ -201,7 +201,8 @@ namespace pybind11
 
             bool load(handle src, bool)
             {
-                try {
+                try
+                {
                     value = pyjson::to_json(src);
                     return true;
                 }
