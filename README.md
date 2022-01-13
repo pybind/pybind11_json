@@ -69,6 +69,10 @@ j = my_module.return_json()
 print(j)
 ```
 
+### Example
+
+You can find an example of simple Python bindings using pybind11_json here: https://github.com/martinRenou/xjson
+
 # Installation
 
 ## Using conda
