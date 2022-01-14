@@ -6,7 +6,6 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#include <iostream>
 #include <string>
 #include <vector>
 #include <cmath>
@@ -22,6 +21,11 @@ namespace py = pybind11;
 namespace nl = nlohmann;
 
 using namespace pybind11::literals;
+
+inline py::module create_module(const std::string& module_name)
+{
+    return py::module_::create_extension_module(module_name.c_str(), nullptr, new py::module_::module_def);
+}
 
 TEST(nljson_serializers_tojson, none)
 {
@@ -429,7 +433,7 @@ inline const nl::json& test_fromtojson(const nl::json& json)
 TEST(pybind11_caster_tojson, dict)
 {
     py::scoped_interpreter guard;
-    py::module m("test");
+    py::module m = create_module("test");
 
     m.def("to_json", &test_fromtojson);
 
@@ -445,7 +449,7 @@ TEST(pybind11_caster_tojson, dict)
 TEST(pybind11_caster_fromjson, dict)
 {
     py::scoped_interpreter guard;
-    py::module m("test");
+    py::module m = create_module("test");
 
     m.def("from_json", &test_fromtojson);
 
