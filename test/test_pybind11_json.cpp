@@ -6,6 +6,7 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
+#include <iostream>
 #include <string>
 #include <vector>
 #include <cmath>
@@ -80,6 +81,7 @@ TEST(nljson_serializers_tojson, integer)
 
 TEST(nljson_serializers_tojson, float_)
 {
+    py::scoped_interpreter guard;
     py::float_ obj(36.37);
     nl::json j = obj;
 
@@ -311,6 +313,7 @@ TEST(nljson_serializers_fromjson, integer)
 
 TEST(nljson_serializers_fromjson, float_)
 {
+    py::scoped_interpreter guard;
     nl::json j = "36.2"_json;
     py::object obj = j;
 
