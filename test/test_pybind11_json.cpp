@@ -315,6 +315,27 @@ TEST(nljson_serializers_fromjson, integer)
     ASSERT_EQ(obj2.cast<int>(), 36);
 }
 
+TEST(nljson_serializers_fromjson, integer_large_unsigned)
+{
+    // Note: if the asserts below error, the large number is printed as "-1" with
+    // an overflow error. This is only in the output step in pybind. Calling
+    // py::print on the objects shows the correct large unsigned integer.
+
+    py::scoped_interpreter guard;
+    uint64_t original = 13625394757606569013ull;
+    py::int_ py_orig = original;
+    nl::json j = original;
+    py::object obj = j;
+
+    ASSERT_TRUE(py::isinstance<py::int_>(obj));
+    ASSERT_EQ(obj.cast<uint64_t>(), original);
+
+    py::int_ obj2 = j;
+
+    // Use .equal to compare values not pointers
+    ASSERT_TRUE(obj2.equal(py_orig));
+}
+
 TEST(nljson_serializers_fromjson, float_)
 {
     py::scoped_interpreter guard;
