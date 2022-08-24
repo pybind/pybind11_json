@@ -5,6 +5,7 @@ dependencies:
   # Build dependencies
   - cmake
   - cxx-compiler
+  - ninja
   # Host dependencies
   - nlohmann_json
   - pybind11

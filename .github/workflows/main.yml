@@ -60,12 +60,12 @@ jobs:
       run: |
         call C:\Users\runneradmin\micromamba-root\condabin\micromamba.bat activate pybind11_json
         cmake .. ^
-          -G "NMake Makefiles" ^
+          -G Ninja ^
           -D CMAKE_INSTALL_PREFIX="%CONDA_PREFIX%\Library" ^
           -D DOWNLOAD_GTEST=ON ^
           -D gtest_force_shared_crt=ON ^
           -D CMAKE_CXX_FLAGS=/D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING
-        nmake install
+        ninja install
       working-directory: build
 
     - name: Unix, Run tests
