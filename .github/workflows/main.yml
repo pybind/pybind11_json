@@ -8,6 +8,10 @@ on:
     branches:
     - master
 
+defaults:
+  run:
+    shell: bash -l {0}
+
 jobs:
   run:
     runs-on: ${{ matrix.os }}
@@ -21,36 +25,61 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
-    - name: Setup conda
-      uses: s-weigand/setup-conda@v1
+    - name: Install mamba
+      uses: mamba-org/provision-with-micromamba@main
       with:
-        update-conda: true
-        conda-channels: conda-forge
+        environment-file: dev-environment.yml
+        environment-name: pybind11_json
+        micromamba-version: "0.22.0"
+        extra-specs: python=${{ matrix.python-version }}*=*_cpython
 
-    - name: Conda install dependencies
-      run: conda install python=${{ matrix.python-version }}*=*_cpython cmake=3.17 nlohmann_json pybind11
+    - name: Make build directory
+      run: mkdir build
+
+    - name: Micromamba shell hook
+      if: matrix.os == 'windows-latest'
+      shell: powershell
+      run: |
+        micromamba shell hook -s cmd.exe -p C:\Users\runneradmin\micromamba-root
 
     - name: Unix, install
       if: matrix.os != 'windows-latest'
       run: |
-           mkdir build
-           cd build
-           $CONDA/bin/cmake -D CMAKE_INSTALL_PREFIX=$CONDA -D DOWNLOAD_GTEST=ON -D PYTHON_EXECUTABLE=$CONDA/bin/python -D CMAKE_INSTALL_LIBDIR=lib ..
-           make install -j2
+        micromamba activate pybind11_json
+        cmake .. \
+          -D CMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
+          -D DOWNLOAD_GTEST=ON \
+          -D PYTHON_EXECUTABLE=`which python` \
+          -D CMAKE_INSTALL_LIBDIR=lib
+        make install -j2
+      working-directory: build
 
     - name: Windows, install
       if: matrix.os == 'windows-latest'
       shell: cmd
       run: |
-           call "c:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-           mkdir build
-           cd build
-           %CONDA%/Library/bin/cmake -G "NMake Makefiles" -D CMAKE_INSTALL_PREFIX=%CONDA% -D DOWNLOAD_GTEST=ON -D PYTHON_EXECUTABLE=%CONDA%/python.exe -Dgtest_force_shared_crt=ON -DCMAKE_CXX_FLAGS=/D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING ..
-           nmake install
+        call C:\Users\runneradmin\micromamba-root\condabin\micromamba.bat activate pybind11_json
+        cmake .. ^
+          -G "NMake Makefiles" ^
+          -D CMAKE_INSTALL_PREFIX="%CONDA_PREFIX%\Library" ^
+          -D DOWNLOAD_GTEST=ON ^
+          -D gtest_force_shared_crt=ON ^
+          -D CMAKE_CXX_FLAGS=/D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING
+        nmake install
+      working-directory: build
 
-    - name: Run tests
-      shell: bash
+    - name: Unix, Run tests
+      if: matrix.os != 'windows-latest'
       run: |
-           export PYTHONHOME=$CONDA
-           cd build
-           ./test/test_pybind11_json
+        micromamba activate pybind11_json
+        ./test_pybind11_json
+      working-directory: build/test
+
+    - name: Windows, Run tests
+      if: matrix.os == 'windows-latest'
+      shell: cmd
+      run: |
+        call C:\Users\runneradmin\micromamba-root\condabin\micromamba.bat activate pybind11_json
+        set PYTHONHOME=%CONDA_PREFIX%
+        test_pybind11_json
+      working-directory: build/test

@@ -1,0 +1,10 @@
+name: pybind11_json
+channels:
+  - conda-forge
+dependencies:
+  # Build dependencies
+  - cmake
+  - cxx-compiler
+  # Host dependencies
+  - nlohmann_json
+  - pybind11
