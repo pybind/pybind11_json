@@ -31,13 +31,13 @@ namespace pyjson
         {
             return py::bool_(j.get<bool>());
         }
-        else if (j.is_number_integer())
-        {
-            return py::int_(j.get<nl::json::number_integer_t>());
-        }
         else if (j.is_number_unsigned())
         {
             return py::int_(j.get<nl::json::number_unsigned_t>());
+        }
+        else if (j.is_number_integer())
+        {
+            return py::int_(j.get<nl::json::number_integer_t>());
         }
         else if (j.is_number_float())
         {
