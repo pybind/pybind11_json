@@ -20,66 +20,18 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ["3.7", "3.8", "3.9", "3.10"]
+        python-version: ["3.7", "3.9", "3.11", "3.12"]
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v4
 
-    - name: Install mamba
-      uses: mamba-org/provision-with-micromamba@main
+    - uses: prefix-dev/setup-pixi@v0.5.1
       with:
-        environment-file: dev-environment.yml
-        environment-name: pybind11_json
-        micromamba-version: "0.22.0"
-        extra-specs: python=${{ matrix.python-version }}*=*_cpython
+        pixi-version: v0.17.1
+        cache: false
 
-    - name: Make build directory
-      run: mkdir build
+    - name: Run build
+      run: pixi run build
 
-    - name: Micromamba shell hook
-      if: matrix.os == 'windows-latest'
-      shell: powershell
-      run: |
-        micromamba shell hook -s cmd.exe -p C:\Users\runneradmin\micromamba-root
-
-    - name: Unix, install
-      if: matrix.os != 'windows-latest'
-      run: |
-        micromamba activate pybind11_json
-        cmake .. \
-          -D CMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
-          -D DOWNLOAD_GTEST=ON \
-          -D PYTHON_EXECUTABLE=`which python` \
-          -D CMAKE_INSTALL_LIBDIR=lib
-        make install -j2
-      working-directory: build
-
-    - name: Windows, install
-      if: matrix.os == 'windows-latest'
-      shell: cmd
-      run: |
-        call C:\Users\runneradmin\micromamba-root\condabin\micromamba.bat activate pybind11_json
-        cmake .. ^
-          -G Ninja ^
-          -D CMAKE_INSTALL_PREFIX="%CONDA_PREFIX%\Library" ^
-          -D DOWNLOAD_GTEST=ON ^
-          -D gtest_force_shared_crt=ON ^
-          -D CMAKE_CXX_FLAGS=/D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING
-        ninja install
-      working-directory: build
-
-    - name: Unix, Run tests
-      if: matrix.os != 'windows-latest'
-      run: |
-        micromamba activate pybind11_json
-        ./test_pybind11_json
-      working-directory: build/test
-
-    - name: Windows, Run tests
-      if: matrix.os == 'windows-latest'
-      shell: cmd
-      run: |
-        call C:\Users\runneradmin\micromamba-root\condabin\micromamba.bat activate pybind11_json
-        set PYTHONHOME=%CONDA_PREFIX%
-        test_pybind11_json
-      working-directory: build/test
+    - name: Run tests
+      run: pixi run test
