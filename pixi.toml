@@ -33,6 +33,18 @@ cmd = [
 inputs = ["CMakeLists.txt"]
 outputs = ["build/CMakeFiles/"]
 
+[target.win-64.tasks.configure]
+cmd = [
+    "cmake",
+    "-GNinja",
+    "-S.",
+    "-Bbuild",
+    "-Dgtest_force_shared_crt=ON",
+    "-DDOWNLOAD_GTEST=ON",
+    "-DCMAKE_INSTALL_LIBDIR=Library",
+    "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
+]
+
 [feature.build.tasks.build]
 cmd = ["cmake", "--build", "build"]
 depends_on = ["configure"]
