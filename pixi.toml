@@ -6,12 +6,6 @@ platforms = ["win-64", "linux-64", "osx-64", "osx-arm64"]
 [dependencies]
 python = ">=3.7"
 
-[tasks.test]
-cmd = "./build/test/test_pybind11_json"
-depends_on = ["build"]
-
-
-[feature.build.dependencies]
 # Build dependencies
 cmake = "*"
 cxx-compiler = "*"
@@ -20,7 +14,11 @@ ninja = "*"
 nlohmann_json = "*"
 pybind11 = "*"
 
-[feature.build.tasks.configure]
+[tasks.test]
+cmd = "./build/test/test_pybind11_json"
+depends_on = ["build"]
+
+[tasks.configure]
 cmd = [
     "cmake",
     "-GNinja",
@@ -45,7 +43,8 @@ cmd = [
     "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
 ]
 
-[feature.build.tasks.build]
+
+[tasks.build]
 cmd = ["cmake", "--build", "build"]
 depends_on = ["configure"]
 inputs = [
@@ -55,6 +54,3 @@ inputs = [
 outputs = [
     "build/"
 ]
-
-[environments]
-build = ["build"]
