@@ -6,6 +6,14 @@ platforms = ["win-64", "linux-64", "osx-64", "osx-arm64"]
 [dependencies]
 python = ">=3.7"
 
+# Build dependencies
+cmake = "*"
+cxx-compiler = "*"
+ninja = "*"
+# Host dependencies
+nlohmann_json = "*"
+pybind11 = "*"
+
 [feature.py37.dependencies]
 python = "3.7.*"
 [feature.py38.dependencies]
@@ -30,13 +38,6 @@ py311 = ["py311"]
 py312 = ["py312"]
 py313 = ["py313"]
 
-# Build dependencies
-cmake = "*"
-cxx-compiler = "*"
-ninja = "*"
-# Host dependencies
-nlohmann_json = "*"
-pybind11 = "*"
 
 [tasks.test]
 cmd = "./build/test/test_pybind11_json"
