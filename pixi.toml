@@ -14,8 +14,6 @@ ninja = "*"
 nlohmann_json = "*"
 pybind11 = "*"
 
-[feature.py37.dependencies]
-python = "3.7.*"
 [feature.py38.dependencies]
 python = "3.8.*"
 [feature.py39.dependencies]
@@ -26,17 +24,16 @@ python = "3.10.*"
 python = "3.11.*"
 [feature.py312.dependencies]
 python = "3.12.*"
-[feature.py313.dependencies]
-python = "3.13.*"
+# [feature.py313.dependencies]
+# python = "3.13.*"
 
 [environments]
-py37 = ["py37"]
 py38 = ["py38"]
 py39 = ["py39"]
 py310 = ["py310"]
 py311 = ["py311"]
 py312 = ["py312"]
-py313 = ["py313"]
+# py313 = ["py313"]
 
 
 [tasks.test]
