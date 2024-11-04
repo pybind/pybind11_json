@@ -1,7 +1,11 @@
 ![Tests](https://github.com/pybind/pybind11_json/workflows/Tests/badge.svg)
 
 # pybind11_json
+
 `pybind11_json` is an `nlohmann::json` to `pybind11` bridge, it allows you to automatically convert `nlohmann::json` to `py::object` and the other way around. Simply include the header, and the automatic conversion will be enabled.
+
+> [!TIP]
+> Looking for an equivalent with nanobind? Check this out https://github.com/ianhbell/nanobind_json !
 
 ## C++ API: Automatic conversion between `nlohmann::json` and `pybind11` Python objects
 
