@@ -481,3 +481,22 @@ TEST(pybind11_caster_fromjson, dict)
     ASSERT_EQ(j["number"].cast<int>(), 1234);
     ASSERT_EQ(j["hello"].cast<std::string>(), "world");
 }
+
+TEST(pybind11_caster_tojson, recursive_dict)
+{
+    py::scoped_interpreter guard;
+    py::module m = create_module("test");
+
+    m.def("to_json", &test_fromtojson);
+
+    // Simulate calling this binding from Python with a dictionary as argument
+    py::dict obj_inner("number"_a=1234, "hello"_a="world");
+    py::dict obj;
+    obj["first"] = obj_inner;
+    obj["second"] = obj_inner;
+
+    ASSERT_NO_THROW(m.attr("to_json")(obj));
+
+    obj["second"]["recur"] = obj_inner;
+    ASSERT_ANY_THROW(m.attr("to_json")(obj));
+}
