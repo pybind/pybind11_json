@@ -133,3 +133,27 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${PROJECT_NAME}Config.cmake
 install(EXPORT ${PROJECT_NAME}-targets
         FILE ${PROJECT_NAME}Targets.cmake
         DESTINATION ${PYBIND11_JSON_CMAKECONFIG_INSTALL_DIR})
+
+# pkg-config support
+if(NOT prefix_for_pc_file)
+if(IS_ABSOLUTE "${CMAKE_INSTALL_DATAROOTDIR}")
+  set(prefix_for_pc_file "${CMAKE_INSTALL_PREFIX}")
+else()
+  set(pc_datarootdir "${CMAKE_INSTALL_DATAROOTDIR}")
+  if(CMAKE_VERSION VERSION_LESS 3.20)
+    set(prefix_for_pc_file "\${pcfiledir}/..")
+    while(pc_datarootdir)
+      get_filename_component(pc_datarootdir "${pc_datarootdir}" DIRECTORY)
+      string(APPEND prefix_for_pc_file "/..")
+    endwhile()
+  else()
+    cmake_path(RELATIVE_PATH CMAKE_INSTALL_PREFIX BASE_DIRECTORY CMAKE_INSTALL_DATAROOTDIR
+               OUTPUT_VARIABLE prefix_for_pc_file)
+  endif()
+endif()
+endif()
+set(includedir_for_pc_file "\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}")
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/pybind11_json.pc.in"
+             "${CMAKE_CURRENT_BINARY_DIR}/pybind11_json.pc" @ONLY)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/pybind11_json.pc"
+      DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig/")

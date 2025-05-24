@@ -1,0 +1,7 @@
+prefix=@prefix_for_pc_file@
+includedir=@includedir_for_pc_file@
+
+Name: @PROJECT_NAME@
+Description: Using nlohmann::json with pybind11
+Version: @PROJECT_VERSION@
+Cflags: -I${includedir}
