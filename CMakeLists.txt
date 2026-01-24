@@ -45,7 +45,6 @@ add_library(${PROJECT_NAME} INTERFACE)
 
 target_include_directories(${PROJECT_NAME}
                            INTERFACE
-                           ${PYTHON_INCLUDE_DIRS}
                            $<BUILD_INTERFACE:${PYBIND11_JSON_INCLUDE_DIR}>
                            $<INSTALL_INTERFACE:include>)
 
