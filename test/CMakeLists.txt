@@ -73,6 +73,7 @@ include_directories(${GTEST_INCLUDE_DIRS} SYSTEM)
 
 set(PYBIND11_JSON_TESTS
     test_pybind11_json.cpp
+    test_pybind11_ordered_json.cpp
 )
 
 add_executable(test_pybind11_json ${PYBIND11_JSON_TESTS})
