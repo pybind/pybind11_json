@@ -39,6 +39,7 @@ set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib; ${CMAKE_INSTALL_PREFIX}/${
 
 set(PYBIND11_JSON_HEADERS
     include/pybind11_json/pybind11_json.hpp
+    include/pybind11_json/pybind11_ordered_json.hpp
 )
 
 add_library(${PROJECT_NAME} INTERFACE)
