@@ -6,7 +6,7 @@
 # The full license is in the file LICENSE, distributed with this software. #
 ############################################################################
 
-cmake_minimum_required(VERSION 3.5...3.14)
+cmake_minimum_required(VERSION 3.24)
 project(pybind11_json)
 
 set(PYBIND11_JSON_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -49,13 +49,9 @@ target_include_directories(${PROJECT_NAME}
                            $<BUILD_INTERFACE:${PYBIND11_JSON_INCLUDE_DIR}>
                            $<INSTALL_INTERFACE:include>)
 
-# The PUBLIC_HEADER property can be set for an INTERFACE library
-# as of cmake 3.15
-if(NOT (CMAKE_VERSION VERSION_LESS 3.15))  # CMake >= 3.15
 set_target_properties(${PROJECT_NAME}
         PROPERTIES
         PUBLIC_HEADER "${PYBIND11_JSON_HEADERS}")
-endif()
 
 #########
 # Tests #
@@ -80,15 +76,9 @@ include(CMakePackageConfigHelpers)
 
 set(PYBIND11_JSON_CMAKECONFIG_INSTALL_DIR "${CMAKE_INSTALL_DATAROOTDIR}/cmake/${PROJECT_NAME}" CACHE STRING "install path for pybind11_jsonConfig.cmake")
 
-# Install pybind11_json
-if(CMAKE_VERSION VERSION_LESS 3.15)  # CMake < 3.15
-install(TARGETS ${PROJECT_NAME}
-        EXPORT ${PROJECT_NAME}-targets)
-else()
 install(TARGETS ${PROJECT_NAME}
         EXPORT ${PROJECT_NAME}-targets
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME})
-endif()
 
 # Makes the project importable from the build directory
 export(EXPORT ${PROJECT_NAME}-targets
