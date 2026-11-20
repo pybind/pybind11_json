@@ -1,4 +1,4 @@
-[project]
+[workspace]
 name = "pybind11_json"
 channels = ["conda-forge"]
 platforms = ["win-64", "linux-64", "osx-64", "osx-arm64"]
@@ -13,10 +13,12 @@ ninja = "*"
 # Host dependencies
 nlohmann_json = "*"
 pybind11 = "*"
+gtest = "*"
+libpython = "*"
 
 [tasks.test]
 cmd = "./build/test/test_pybind11_json"
-depends_on = ["build"]
+depends-on = ["build"]
 
 [tasks.configure]
 cmd = [
@@ -24,7 +26,7 @@ cmd = [
     "-GNinja",
     "-S.",
     "-Bbuild",
-    "-DDOWNLOAD_GTEST=ON",
+    "-DBUILD_TESTS=ON",
     "-DCMAKE_INSTALL_LIBDIR=lib",
     "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
 ]
@@ -46,7 +48,7 @@ cmd = [
 
 [tasks.build]
 cmd = ["cmake", "--build", "build"]
-depends_on = ["configure"]
+depends-on = ["configure"]
 inputs = [
     "CMakeLists.txt",
     "src/*"
